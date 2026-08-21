@@ -43,3 +43,10 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Maven build artifacts
+backend/target/
+target/
+
+# External repositories
+AI-Powered-Capacity-Platform/

@@ -15,5 +15,9 @@ final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
 final secureStorageProvider = Provider<FlutterSecureStorage>((ref) {
   return const FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
+    webOptions: WebOptions(
+      dbName: 'MediVerseSecureStorage',
+      publicKey: 'MediVerseKey',
+    ),
   );
 });

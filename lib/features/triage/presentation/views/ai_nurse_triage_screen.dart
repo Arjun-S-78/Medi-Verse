@@ -120,7 +120,7 @@ class _AiNurseTriageScreenState extends State<AiNurseTriageScreen> {
         ),
         title: Text(
           _currentPhase == 0
-              ? 'AI Nurse Triage'
+              ? 'MIRA AI Triage'
               : (_currentPhase < 5
                   ? 'Clinical Assessment'
                   : (_currentPhase == 5 ? 'Processing Risk...' : 'Triage Result')),
@@ -216,7 +216,7 @@ class _AiNurseTriageScreenState extends State<AiNurseTriageScreen> {
               const SizedBox(height: 20),
 
               const Text(
-                'Nurse Sarah, RN (AI)',
+                'MIRA (AI Clinical Specialist)',
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w800,
@@ -404,7 +404,7 @@ class _AiNurseTriageScreenState extends State<AiNurseTriageScreen> {
                       Expanded(
                         child: Text(
                           _isListeningVoice
-                              ? 'Nurse Sarah listening... Speak symptoms'
+                              ? 'MIRA listening... Speak symptoms'
                               : 'Tap to speak symptoms hands-free',
                           style: TextStyle(
                             fontSize: 13,

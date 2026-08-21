@@ -55,7 +55,7 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
   // Mock Recent Emergency Requests
   final List<Map<String, dynamic>> _recentRequests = [
     {
-      'title': 'Chest Pain & AI Triage Assessment',
+      'title': 'Chest Pain & MIRA Triage Assessment',
       'date': 'Aug 2, 2026 • 14:32',
       'hospital': 'City General ER',
       'status': 'Handover Complete',
@@ -295,6 +295,11 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
                 // 3. Prominent Emergency SOS Button
                 _buildEmergencyButtonSection(isDark),
 
+                const SizedBox(height: 20),
+
+                // 3.5 Ambulance Live Tracking Dashboard Launcher Banner
+                _buildAmbulanceTrackingBanner(isDark),
+
                 const SizedBox(height: 24),
 
                 // 4. Medical Summary Card
@@ -371,7 +376,7 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
                   ),
                 ],
               ),
-              StatusBadge.active(label: 'AI Ready'),
+              StatusBadge.active(label: 'MIRA AI Active'),
             ],
           ),
           const SizedBox(height: 12),
@@ -423,7 +428,7 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
           ),
           const SizedBox(height: 14),
           Text(
-            'TAP FOR AI NURSE TRIAGE & AMBULANCE DISPATCH',
+            'TAP FOR MIRA TRIAGE & AMBULANCE DISPATCH',
             textAlign: TextAlign.center,
             style: GoogleFonts.poppins(
               fontSize: 11,
@@ -435,6 +440,100 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
         ],
       ),
     ).animate().fadeIn(delay: 150.ms, duration: 500.ms);
+  }
+
+  // Section 3.5: Ambulance Live Tracking Dashboard Launcher Banner
+  Widget _buildAmbulanceTrackingBanner(bool isDark) {
+    return GestureDetector(
+      onTap: () => context.go(RouteNames.ambulanceDashboard),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: isDark
+                ? [AppColors.darkSurfaceCard, const Color(0xFF1E293B)]
+                : [Colors.white, const Color(0xFFF1F5F9)],
+          ),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: AppColors.primary500.withValues(alpha: 0.4),
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary500.withValues(alpha: 0.15),
+              blurRadius: 14,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.primary500.withValues(alpha: 0.15),
+              ),
+              child: const Icon(
+                Icons.airport_shuttle_rounded,
+                color: AppColors.primary500,
+                size: 30,
+              ),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        'Ambulance Fleet Dashboard',
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white : AppColors.neutral900,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: AppColors.esi1Critical,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          '5 ACTIVE',
+                          style: GoogleFonts.poppins(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    'Real-time Google Maps GPS, route paths & telemetry',
+                    style: GoogleFonts.poppins(
+                      fontSize: 11,
+                      color: isDark ? AppColors.neutral400 : AppColors.neutral600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios_rounded,
+              size: 16,
+              color: isDark ? AppColors.primaryAccent : AppColors.primary500,
+            ),
+          ],
+        ),
+      ),
+    ).animate().fadeIn(delay: 200.ms, duration: 400.ms);
   }
 
   // Section 4: Medical Summary Card
@@ -736,7 +835,7 @@ class _PatientDashboardScreenState extends State<PatientDashboardScreen> {
         NavigationDestination(
           icon: Icon(Icons.psychology_outlined),
           selectedIcon: Icon(Icons.psychology_rounded, color: AppColors.primary500),
-          label: 'AI Triage',
+          label: 'MIRA Triage',
         ),
         NavigationDestination(
           icon: Icon(Icons.local_hospital_outlined),

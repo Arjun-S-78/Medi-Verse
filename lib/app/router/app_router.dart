@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/ambulance/presentation/views/ambulance_tracking_dashboard_screen.dart';
 import '../../features/ambulance/presentation/views/emergency_dispatch_tracking_screen.dart';
 import '../../features/auth/presentation/views/login_screen.dart';
 import '../../features/auth/presentation/views/register_screen.dart';
@@ -50,6 +51,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: RouteNames.liveTracking,
       builder: (context, state) => const EmergencyDispatchTrackingScreen(initialStep: 2),
+    ),
+    GoRoute(
+      path: RouteNames.ambulanceDashboard,
+      builder: (context, state) => const AmbulanceTrackingDashboardScreen(),
     ),
   ],
   errorBuilder: (context, state) => Scaffold(

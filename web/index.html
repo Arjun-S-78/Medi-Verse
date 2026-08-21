@@ -14,7 +14,7 @@
     This is a placeholder for base href that will be replaced by the value of
     the `--base-href` argument provided to `flutter build`.
   -->
-  <base href="$FLUTTER_BASE_HREF">
+  <base href="/">
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
@@ -31,16 +31,10 @@
 
   <title>mediverse</title>
   <link rel="manifest" href="manifest.json">
+  <!-- Google Maps JavaScript API (Non-blocking async load) -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDGAgFJPu2uAoNa6RSQ5VbWhseZyppxfYw&libraries=places,geometry,routes" async defer></script>
 </head>
 <body>
-  <!--
-    You can customize the "flutter_bootstrap.js" script.
-    This is useful to provide a custom configuration to the Flutter loader
-    or to give the user feedback during the initialization process.
-
-    For more details:
-    * https://docs.flutter.dev/platform-integration/web/initialization
-  -->
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

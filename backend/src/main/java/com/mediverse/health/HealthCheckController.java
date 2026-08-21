@@ -20,7 +20,7 @@ public class HealthCheckController {
     public ResponseEntity<Map<String, Object>> checkHealth() {
         Map<String, Object> status = Map.of(
                 "status", "UP",
-                "service", "MediVerse Emergency Healthcare Backend",
+                "service", "MediVerse Backend",
                 "version", "1.0.0 Enterprise",
                 "timestamp", LocalDateTime.now().toString(),
                 "database", "PostgreSQL Configured",

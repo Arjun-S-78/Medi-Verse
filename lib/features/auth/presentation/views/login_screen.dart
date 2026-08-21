@@ -464,7 +464,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                               Text(
-                                'Bypass sign-in for instant AI Triage',
+                                'Bypass sign-in for instant MIRA Triage',
                                 style: GoogleFonts.poppins(
                                   fontSize: 11,
                                   color: isDark ? AppColors.neutral400 : AppColors.neutral700,

@@ -10,6 +10,7 @@ abstract class RouteNames {
   static const String searchingAmbulance = '/ambulance/search';
   static const String ambulanceAssigned = '/ambulance/assigned';
   static const String liveTracking = '/ambulance/live-tracking';
+  static const String ambulanceDashboard = '/ambulance/dashboard';
   static const String hospitalArrival = '/emergency/arrival';
   static const String hospitalSearch = '/hospitals';
   static const String hospitalDetail = '/hospitals/detail';
