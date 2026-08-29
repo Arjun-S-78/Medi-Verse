@@ -1,0 +1,221 @@
+[
+  {
+    "case_id": "SYN-90048665",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 26,
+      "gender": "Female",
+      "blood_group": "AB+"
+    },
+    "chief_complaint": "Stubbed my pinky toe on the bed frame, it's bruised.",
+    "symptoms": [
+      "Minor Injuries"
+    ],
+    "symptom_onset": "2 days ago",
+    "symptom_duration": "Ongoing",
+    "severity": "LOW",
+    "vital_signs": {
+      "heart_rate": 84,
+      "spo2": 99,
+      "bp_systolic": 118,
+      "bp_diastolic": 70,
+      "temp_c": 36.9
+    },
+    "medical_history": [
+      "GERD"
+    ],
+    "medications": [
+      "Pantoprazole 40mg"
+    ],
+    "emergency_red_flags": [],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA, your AI nurse assistant. How can I help you today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "Stubbed my pinky toe on the bed frame, it's bruised."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you. On a scale of 0 to 10, how severe is your pain or discomfort right now?"
+      },
+      {
+        "turn": 4,
+        "speaker": "patient",
+        "text": "I'd rate it an 3 out of 10."
+      }
+    ],
+    "structured_clinical_info": {
+      "chestPain": false,
+      "breathingDifficulty": false,
+      "unconsciousness": false,
+      "painSeverity": "mild",
+      "painScore": 2,
+      "suddenOnset": false,
+      "radiationLeftArm": false
+    },
+    "expected_triage_category": "LOW",
+    "expected_escalation_action": "Routine Tele-consultation & Home Monitoring Advice",
+    "generation_metadata": {
+      "generator_version": "1.0.0",
+      "category": "Minor Injuries",
+      "seed": 42,
+      "created_at": "2026-08-27T14:33:59.546262"
+    },
+    "split_type": "test"
+  },
+  {
+    "case_id": "SYN-13356886",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 53,
+      "gender": "Male",
+      "blood_group": "B-"
+    },
+    "chief_complaint": "I don't know what's happening but my chest started hurting suddenly while sitting on the couch.",
+    "symptoms": [
+      "Chest Pain",
+      "Chest Pain"
+    ],
+    "symptom_onset": "30 minutes ago",
+    "symptom_duration": "Ongoing",
+    "severity": "CRITICAL",
+    "vital_signs": {
+      "heart_rate": 126,
+      "spo2": 85,
+      "bp_systolic": 87,
+      "bp_diastolic": 42,
+      "temp_c": 37.1
+    },
+    "medical_history": [
+      "Coronary Artery Disease",
+      "High Cholesterol"
+    ],
+    "medications": [
+      "Aspirin 75mg",
+      "Atorvastatin 20mg"
+    ],
+    "emergency_red_flags": [
+      "Crushing Chest Pain",
+      "Radiation to Left Arm",
+      "Sudden Onset"
+    ],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA, your AI nurse assistant. How can I help you today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "I don't know what's happening but my chest started hurting suddenly while sitting on the couch."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "I understand you have chest discomfort. Are you experiencing shortness of breath, sweating, or radiation to your left arm or jaw?"
+      },
+      {
+        "turn": 4,
+        "speaker": "patient",
+        "text": "Yes, I am sweating and my arm feels heavy."
+      }
+    ],
+    "structured_clinical_info": {
+      "chestPain": true,
+      "breathingDifficulty": false,
+      "unconsciousness": false,
+      "painSeverity": "severe",
+      "painScore": 9,
+      "suddenOnset": true,
+      "radiationLeftArm": true
+    },
+    "expected_triage_category": "CRITICAL",
+    "expected_escalation_action": "Dispatch Immediate ALS Emergency Ambulance & Alert Nearest Trauma Center",
+    "generation_metadata": {
+      "generator_version": "1.0.0",
+      "category": "Chest Pain",
+      "seed": 42,
+      "created_at": "2026-08-27T14:33:59.546032"
+    },
+    "split_type": "test"
+  },
+  {
+    "case_id": "SYN-55176955",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 31,
+      "gender": "Male",
+      "blood_group": "AB+"
+    },
+    "chief_complaint": "I cut my arm deep with a power tool and blood is pulsing out everywhere!",
+    "symptoms": [
+      "Severe Bleeding"
+    ],
+    "symptom_onset": "2 days ago",
+    "symptom_duration": "Ongoing",
+    "severity": "LOW",
+    "vital_signs": {
+      "heart_rate": 79,
+      "spo2": 99,
+      "bp_systolic": 119,
+      "bp_diastolic": 74,
+      "temp_c": 37.0
+    },
+    "medical_history": [
+      "Asthma"
+    ],
+    "medications": [
+      "Salbutamol Inhaler"
+    ],
+    "emergency_red_flags": [
+      "Active Heavy Arterial Bleeding"
+    ],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA, your AI nurse assistant. How can I help you today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "I cut my arm deep with a power tool and blood is pulsing out everywhere!"
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you. On a scale of 0 to 10, how severe is your pain or discomfort right now?"
+      },
+      {
+        "turn": 4,
+        "speaker": "patient",
+        "text": "I'd rate it an 3 out of 10."
+      }
+    ],
+    "structured_clinical_info": {
+      "chestPain": false,
+      "breathingDifficulty": false,
+      "unconsciousness": false,
+      "painSeverity": "mild",
+      "painScore": 2,
+      "suddenOnset": false,
+      "radiationLeftArm": true
+    },
+    "expected_triage_category": "LOW",
+    "expected_escalation_action": "Routine Tele-consultation & Home Monitoring Advice",
+    "generation_metadata": {
+      "generator_version": "1.0.0",
+      "category": "Severe Bleeding",
+      "seed": 42,
+      "created_at": "2026-08-27T14:33:59.546140"
+    },
+    "split_type": "test"
+  }
+]

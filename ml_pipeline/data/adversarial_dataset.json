@@ -1,0 +1,622 @@
+[
+  {
+    "case_id": "ADV-23953751",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 61,
+      "gender": "Male",
+      "blood_group": "O+"
+    },
+    "chief_complaint": "I feel fine now but I was unconscious earlier on the bathroom floor.",
+    "symptoms": [
+      "Unconsciousness"
+    ],
+    "symptom_onset": "Earlier today",
+    "symptom_duration": "Transient / Intermittent",
+    "severity": "CRITICAL",
+    "vital_signs": {
+      "heart_rate": 96,
+      "spo2": 95,
+      "bp_systolic": 138,
+      "bp_diastolic": 86,
+      "temp_c": 37.0
+    },
+    "medical_history": [
+      "Hypertension"
+    ],
+    "medications": [
+      "Amlodipine 5mg"
+    ],
+    "emergency_red_flags": [
+      "Recent Transient Loss of Consciousness"
+    ],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA. What brings you in today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "I feel fine now but I was unconscious earlier on the bathroom floor."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you for sharing. Even if you feel better now, Historical loss of consciousness requires mandatory emergency evaluation despite transient resolution.. Are you experiencing any dizziness or numbness?"
+      }
+    ],
+    "structured_clinical_info": {
+      "historicalRedFlagDetected": true,
+      "transientResolution": true,
+      "adversarialCase": true
+    },
+    "expected_triage_category": "CRITICAL",
+    "expected_escalation_action": "Emergency Priority Evaluation (Do not dismiss based on symptom resolution)",
+    "generation_metadata": {
+      "generator_version": "1.0.0-adversarial",
+      "category": "Unconsciousness",
+      "seed": 999,
+      "created_at": "2026-08-27T14:34:12.613115"
+    }
+  },
+  {
+    "case_id": "ADV-41900321",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 45,
+      "gender": "Female",
+      "blood_group": "O+"
+    },
+    "chief_complaint": "My chest hurt for a few minutes while walking but then it stopped.",
+    "symptoms": [
+      "Chest Pain"
+    ],
+    "symptom_onset": "Earlier today",
+    "symptom_duration": "Transient / Intermittent",
+    "severity": "HIGH",
+    "vital_signs": {
+      "heart_rate": 96,
+      "spo2": 95,
+      "bp_systolic": 138,
+      "bp_diastolic": 86,
+      "temp_c": 37.0
+    },
+    "medical_history": [
+      "Hypertension"
+    ],
+    "medications": [
+      "Amlodipine 5mg"
+    ],
+    "emergency_red_flags": [
+      "Transient Exertional Angina / Angina Pectoris"
+    ],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA. What brings you in today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "My chest hurt for a few minutes while walking but then it stopped."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you for sharing. Even if you feel better now, Resolving chest pain can indicate acute coronary syndrome or unstable angina.. Are you experiencing any dizziness or numbness?"
+      }
+    ],
+    "structured_clinical_info": {
+      "historicalRedFlagDetected": true,
+      "transientResolution": true,
+      "adversarialCase": true
+    },
+    "expected_triage_category": "HIGH",
+    "expected_escalation_action": "Emergency Priority Evaluation (Do not dismiss based on symptom resolution)",
+    "generation_metadata": {
+      "generator_version": "1.0.0-adversarial",
+      "category": "Chest Pain",
+      "seed": 999,
+      "created_at": "2026-08-27T14:34:12.613166"
+    }
+  },
+  {
+    "case_id": "ADV-21487049",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 55,
+      "gender": "Female",
+      "blood_group": "O+"
+    },
+    "chief_complaint": "I'm not sure if I'm having trouble breathing or if I'm just anxious.",
+    "symptoms": [
+      "Breathing Difficulty"
+    ],
+    "symptom_onset": "Earlier today",
+    "symptom_duration": "Transient / Intermittent",
+    "severity": "MODERATE",
+    "vital_signs": {
+      "heart_rate": 96,
+      "spo2": 95,
+      "bp_systolic": 138,
+      "bp_diastolic": 86,
+      "temp_c": 37.0
+    },
+    "medical_history": [
+      "Hypertension"
+    ],
+    "medications": [
+      "Amlodipine 5mg"
+    ],
+    "emergency_red_flags": [
+      "Ambiguous Respiratory Symptoms"
+    ],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA. What brings you in today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "I'm not sure if I'm having trouble breathing or if I'm just anxious."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you for sharing. Even if you feel better now, Requires active oxygen saturation and speech check to rule out silent hypoxia.. Are you experiencing any dizziness or numbness?"
+      }
+    ],
+    "structured_clinical_info": {
+      "historicalRedFlagDetected": true,
+      "transientResolution": true,
+      "adversarialCase": true
+    },
+    "expected_triage_category": "MODERATE",
+    "expected_escalation_action": "Emergency Priority Evaluation (Do not dismiss based on symptom resolution)",
+    "generation_metadata": {
+      "generator_version": "1.0.0-adversarial",
+      "category": "Breathing Difficulty",
+      "seed": 999,
+      "created_at": "2026-08-27T14:34:12.613181"
+    }
+  },
+  {
+    "case_id": "ADV-54197978",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 45,
+      "gender": "Female",
+      "blood_group": "O+"
+    },
+    "chief_complaint": "I fell down 10 stairs but I don't think I was hurt badly, just a little dizzy.",
+    "symptoms": [
+      "Major Trauma"
+    ],
+    "symptom_onset": "Earlier today",
+    "symptom_duration": "Transient / Intermittent",
+    "severity": "HIGH",
+    "vital_signs": {
+      "heart_rate": 96,
+      "spo2": 95,
+      "bp_systolic": 138,
+      "bp_diastolic": 86,
+      "temp_c": 37.0
+    },
+    "medical_history": [
+      "Hypertension"
+    ],
+    "medications": [
+      "Amlodipine 5mg"
+    ],
+    "emergency_red_flags": [
+      "Traumatic Mechanism with Dizziness"
+    ],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA. What brings you in today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "I fell down 10 stairs but I don't think I was hurt badly, just a little dizzy."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you for sharing. Even if you feel better now, Dizziness after a fall indicates potential concussion, intracranial bleed, or spinal trauma.. Are you experiencing any dizziness or numbness?"
+      }
+    ],
+    "structured_clinical_info": {
+      "historicalRedFlagDetected": true,
+      "transientResolution": true,
+      "adversarialCase": true
+    },
+    "expected_triage_category": "HIGH",
+    "expected_escalation_action": "Emergency Priority Evaluation (Do not dismiss based on symptom resolution)",
+    "generation_metadata": {
+      "generator_version": "1.0.0-adversarial",
+      "category": "Major Trauma",
+      "seed": 999,
+      "created_at": "2026-08-27T14:34:12.613191"
+    }
+  },
+  {
+    "case_id": "ADV-70804345",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 68,
+      "gender": "Male",
+      "blood_group": "O+"
+    },
+    "chief_complaint": "My mother suddenly can't speak properly and her smile looks crooked.",
+    "symptoms": [
+      "Neurological Symptoms"
+    ],
+    "symptom_onset": "Earlier today",
+    "symptom_duration": "Transient / Intermittent",
+    "severity": "CRITICAL",
+    "vital_signs": {
+      "heart_rate": 96,
+      "spo2": 95,
+      "bp_systolic": 138,
+      "bp_diastolic": 86,
+      "temp_c": 37.0
+    },
+    "medical_history": [
+      "Hypertension"
+    ],
+    "medications": [
+      "Amlodipine 5mg"
+    ],
+    "emergency_red_flags": [
+      "Acute FAST Stroke Signs (Speech & Facial Droop)"
+    ],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA. What brings you in today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "My mother suddenly can't speak properly and her smile looks crooked."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you for sharing. Even if you feel better now, Third-party reporter presenting acute stroke symptoms requiring immediate hyperacute stroke team dispatch.. Are you experiencing any dizziness or numbness?"
+      }
+    ],
+    "structured_clinical_info": {
+      "historicalRedFlagDetected": true,
+      "transientResolution": true,
+      "adversarialCase": true
+    },
+    "expected_triage_category": "CRITICAL",
+    "expected_escalation_action": "Emergency Priority Evaluation (Do not dismiss based on symptom resolution)",
+    "generation_metadata": {
+      "generator_version": "1.0.0-adversarial",
+      "category": "Neurological Symptoms",
+      "seed": 999,
+      "created_at": "2026-08-27T14:34:12.613204"
+    }
+  },
+  {
+    "case_id": "ADV-68973836",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 61,
+      "gender": "Female",
+      "blood_group": "O+"
+    },
+    "chief_complaint": "I feel fine now but I was unconscious earlier on the bathroom floor.",
+    "symptoms": [
+      "Unconsciousness"
+    ],
+    "symptom_onset": "Earlier today",
+    "symptom_duration": "Transient / Intermittent",
+    "severity": "CRITICAL",
+    "vital_signs": {
+      "heart_rate": 96,
+      "spo2": 95,
+      "bp_systolic": 138,
+      "bp_diastolic": 86,
+      "temp_c": 37.0
+    },
+    "medical_history": [
+      "Hypertension"
+    ],
+    "medications": [
+      "Amlodipine 5mg"
+    ],
+    "emergency_red_flags": [
+      "Recent Transient Loss of Consciousness"
+    ],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA. What brings you in today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "I feel fine now but I was unconscious earlier on the bathroom floor."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you for sharing. Even if you feel better now, Historical loss of consciousness requires mandatory emergency evaluation despite transient resolution.. Are you experiencing any dizziness or numbness?"
+      }
+    ],
+    "structured_clinical_info": {
+      "historicalRedFlagDetected": true,
+      "transientResolution": true,
+      "adversarialCase": true
+    },
+    "expected_triage_category": "CRITICAL",
+    "expected_escalation_action": "Emergency Priority Evaluation (Do not dismiss based on symptom resolution)",
+    "generation_metadata": {
+      "generator_version": "1.0.0-adversarial",
+      "category": "Unconsciousness",
+      "seed": 999,
+      "created_at": "2026-08-27T14:34:12.613213"
+    }
+  },
+  {
+    "case_id": "ADV-78246670",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 61,
+      "gender": "Male",
+      "blood_group": "O+"
+    },
+    "chief_complaint": "My chest hurt for a few minutes while walking but then it stopped.",
+    "symptoms": [
+      "Chest Pain"
+    ],
+    "symptom_onset": "Earlier today",
+    "symptom_duration": "Transient / Intermittent",
+    "severity": "HIGH",
+    "vital_signs": {
+      "heart_rate": 96,
+      "spo2": 95,
+      "bp_systolic": 138,
+      "bp_diastolic": 86,
+      "temp_c": 37.0
+    },
+    "medical_history": [
+      "Hypertension"
+    ],
+    "medications": [
+      "Amlodipine 5mg"
+    ],
+    "emergency_red_flags": [
+      "Transient Exertional Angina / Angina Pectoris"
+    ],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA. What brings you in today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "My chest hurt for a few minutes while walking but then it stopped."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you for sharing. Even if you feel better now, Resolving chest pain can indicate acute coronary syndrome or unstable angina.. Are you experiencing any dizziness or numbness?"
+      }
+    ],
+    "structured_clinical_info": {
+      "historicalRedFlagDetected": true,
+      "transientResolution": true,
+      "adversarialCase": true
+    },
+    "expected_triage_category": "HIGH",
+    "expected_escalation_action": "Emergency Priority Evaluation (Do not dismiss based on symptom resolution)",
+    "generation_metadata": {
+      "generator_version": "1.0.0-adversarial",
+      "category": "Chest Pain",
+      "seed": 999,
+      "created_at": "2026-08-27T14:34:12.613223"
+    }
+  },
+  {
+    "case_id": "ADV-35516695",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 72,
+      "gender": "Female",
+      "blood_group": "O+"
+    },
+    "chief_complaint": "I'm not sure if I'm having trouble breathing or if I'm just anxious.",
+    "symptoms": [
+      "Breathing Difficulty"
+    ],
+    "symptom_onset": "Earlier today",
+    "symptom_duration": "Transient / Intermittent",
+    "severity": "MODERATE",
+    "vital_signs": {
+      "heart_rate": 96,
+      "spo2": 95,
+      "bp_systolic": 138,
+      "bp_diastolic": 86,
+      "temp_c": 37.0
+    },
+    "medical_history": [
+      "Hypertension"
+    ],
+    "medications": [
+      "Amlodipine 5mg"
+    ],
+    "emergency_red_flags": [
+      "Ambiguous Respiratory Symptoms"
+    ],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA. What brings you in today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "I'm not sure if I'm having trouble breathing or if I'm just anxious."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you for sharing. Even if you feel better now, Requires active oxygen saturation and speech check to rule out silent hypoxia.. Are you experiencing any dizziness or numbness?"
+      }
+    ],
+    "structured_clinical_info": {
+      "historicalRedFlagDetected": true,
+      "transientResolution": true,
+      "adversarialCase": true
+    },
+    "expected_triage_category": "MODERATE",
+    "expected_escalation_action": "Emergency Priority Evaluation (Do not dismiss based on symptom resolution)",
+    "generation_metadata": {
+      "generator_version": "1.0.0-adversarial",
+      "category": "Breathing Difficulty",
+      "seed": 999,
+      "created_at": "2026-08-27T14:34:12.613232"
+    }
+  },
+  {
+    "case_id": "ADV-49176941",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 68,
+      "gender": "Female",
+      "blood_group": "O+"
+    },
+    "chief_complaint": "I fell down 10 stairs but I don't think I was hurt badly, just a little dizzy.",
+    "symptoms": [
+      "Major Trauma"
+    ],
+    "symptom_onset": "Earlier today",
+    "symptom_duration": "Transient / Intermittent",
+    "severity": "HIGH",
+    "vital_signs": {
+      "heart_rate": 96,
+      "spo2": 95,
+      "bp_systolic": 138,
+      "bp_diastolic": 86,
+      "temp_c": 37.0
+    },
+    "medical_history": [
+      "Hypertension"
+    ],
+    "medications": [
+      "Amlodipine 5mg"
+    ],
+    "emergency_red_flags": [
+      "Traumatic Mechanism with Dizziness"
+    ],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA. What brings you in today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "I fell down 10 stairs but I don't think I was hurt badly, just a little dizzy."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you for sharing. Even if you feel better now, Dizziness after a fall indicates potential concussion, intracranial bleed, or spinal trauma.. Are you experiencing any dizziness or numbness?"
+      }
+    ],
+    "structured_clinical_info": {
+      "historicalRedFlagDetected": true,
+      "transientResolution": true,
+      "adversarialCase": true
+    },
+    "expected_triage_category": "HIGH",
+    "expected_escalation_action": "Emergency Priority Evaluation (Do not dismiss based on symptom resolution)",
+    "generation_metadata": {
+      "generator_version": "1.0.0-adversarial",
+      "category": "Major Trauma",
+      "seed": 999,
+      "created_at": "2026-08-27T14:34:12.613240"
+    }
+  },
+  {
+    "case_id": "ADV-26945591",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 68,
+      "gender": "Male",
+      "blood_group": "O+"
+    },
+    "chief_complaint": "My mother suddenly can't speak properly and her smile looks crooked.",
+    "symptoms": [
+      "Neurological Symptoms"
+    ],
+    "symptom_onset": "Earlier today",
+    "symptom_duration": "Transient / Intermittent",
+    "severity": "CRITICAL",
+    "vital_signs": {
+      "heart_rate": 96,
+      "spo2": 95,
+      "bp_systolic": 138,
+      "bp_diastolic": 86,
+      "temp_c": 37.0
+    },
+    "medical_history": [
+      "Hypertension"
+    ],
+    "medications": [
+      "Amlodipine 5mg"
+    ],
+    "emergency_red_flags": [
+      "Acute FAST Stroke Signs (Speech & Facial Droop)"
+    ],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA. What brings you in today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "My mother suddenly can't speak properly and her smile looks crooked."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you for sharing. Even if you feel better now, Third-party reporter presenting acute stroke symptoms requiring immediate hyperacute stroke team dispatch.. Are you experiencing any dizziness or numbness?"
+      }
+    ],
+    "structured_clinical_info": {
+      "historicalRedFlagDetected": true,
+      "transientResolution": true,
+      "adversarialCase": true
+    },
+    "expected_triage_category": "CRITICAL",
+    "expected_escalation_action": "Emergency Priority Evaluation (Do not dismiss based on symptom resolution)",
+    "generation_metadata": {
+      "generator_version": "1.0.0-adversarial",
+      "category": "Neurological Symptoms",
+      "seed": 999,
+      "created_at": "2026-08-27T14:34:12.613251"
+    }
+  }
+]

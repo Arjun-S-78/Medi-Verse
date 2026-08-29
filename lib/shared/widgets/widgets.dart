@@ -1,5 +1,8 @@
 // Reusable MediVerse Component Suite Barrel File
 
+// Layout & Responsive Utilities
+export 'responsive_layout_builder.dart';
+
 // Buttons
 export 'buttons/primary_button.dart';
 export 'buttons/secondary_button.dart';
@@ -19,6 +22,7 @@ export 'cards/notification_card.dart';
 export 'feedback/status_badge.dart';
 export 'feedback/loading_widget.dart';
 export 'feedback/loading_indicator.dart';
+export 'feedback/skeleton_loader.dart';
 export 'feedback/error_widget.dart';
 export 'feedback/empty_state_widget.dart';
 export 'feedback/medical_dialog.dart';
@@ -26,6 +30,7 @@ export 'feedback/medical_snackbar.dart';
 
 // Avatars & Tiles
 export 'avatars/medical_avatar.dart';
+export 'mira_avatar_widget.dart';
 export 'tiles/doctor_tile.dart';
 export 'tiles/hospital_tile.dart';
 export 'tiles/patient_tile.dart';

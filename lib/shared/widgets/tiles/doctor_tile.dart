@@ -21,16 +21,14 @@ class DoctorTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurfaceCard : Colors.white,
+        color: AppColors.darkSurfaceCard,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: isDark ? AppColors.darkBorder : AppColors.neutral200,
+          color: AppColors.darkBorder,
         ),
       ),
       child: Row(
@@ -43,12 +41,12 @@ class DoctorTile extends StatelessWidget {
               children: [
                 Text(
                   name,
-                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   '$specialty • $hospitalName',
-                  style: const TextStyle(fontSize: 12, color: AppColors.neutral600),
+                  style: const TextStyle(fontSize: 12, color: AppColors.neutral400),
                 ),
                 const SizedBox(height: 4),
                 Row(

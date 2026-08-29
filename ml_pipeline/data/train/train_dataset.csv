@@ -1,0 +1,12 @@
+case_id,synthetic,severity,chief_complaint,expected_triage_category,expected_escalation_action
+SYN-31931511,True,LOW,"I ate peanuts by mistake, my lips are swelling up fast and my throat feels tight!",LOW,Routine Tele-consultation & Home Monitoring Advice
+SYN-96282117,True,HIGH,My mother suddenly can't speak properly and her left arm won't move.,HIGH,Dispatch BLS Emergency Ambulance & Reserve Urgent ER Bay
+SYN-16150444,True,HIGH,High temperature 39.5C with shivering and body pain.,HIGH,Dispatch BLS Emergency Ambulance & Reserve Urgent ER Bay
+SYN-31831063,True,MODERATE,Mild stomach cramps and feeling nauseous.,MODERATE,Recommend Urgent Clinic Visit within 2 Hours
+SYN-90388981,True,MODERATE,"I feel slightly off today, maybe tired.",MODERATE,Recommend Urgent Clinic Visit within 2 Hours
+SYN-58586340,True,MODERATE,"I passed out for a minute earlier, but I'm fine now.",MODERATE,Recommend Urgent Clinic Visit within 2 Hours
+SYN-82070937,True,CRITICAL,I have a mild runny nose and slight headache.,CRITICAL,Dispatch Immediate ALS Emergency Ambulance & Alert Nearest Trauma Center
+SYN-52339391,True,CRITICAL,My mother suddenly can't speak properly and her left arm won't move.,CRITICAL,Dispatch Immediate ALS Emergency Ambulance & Alert Nearest Trauma Center
+SYN-13999315,True,HIGH,I'm struggling... to get... any air in...,HIGH,Dispatch BLS Emergency Ambulance & Reserve Urgent ER Bay
+SYN-39587039,True,MODERATE,"Fell off a 12 foot ladder onto concrete, severe hip and neck pain.",MODERATE,Recommend Urgent Clinic Visit within 2 Hours
+SYN-77187530,True,HIGH,I have a mild runny nose and slight headache.,HIGH,Dispatch BLS Emergency Ambulance & Reserve Urgent ER Bay

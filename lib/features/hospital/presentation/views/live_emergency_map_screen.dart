@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../../app/router/route_names.dart';
 import '../../../../core/constants/google_maps_config.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_tokens.dart';
 import '../../../../shared/models/severity_level.dart';
 
 /// Enterprise Google Maps Live Emergency & Hospital Radar Screen
@@ -205,7 +207,7 @@ class _LiveEmergencyMapScreenState extends State<LiveEmergencyMapScreen> {
       backgroundColor: isDark ? AppColors.darkCanvas : AppColors.neutral100,
       body: Stack(
         children: [
-          // 1. Google Maps Simulated Interactive Canvas with Route Lines & Markers
+          // 1. Google Maps Interactive Canvas
           Positioned.fill(
             child: _buildGoogleMapsCanvas(isDark),
           ),
@@ -213,34 +215,30 @@ class _LiveEmergencyMapScreenState extends State<LiveEmergencyMapScreen> {
           // 2. Top Header Bar: Emergency Status & Live ETA Card
           Positioned(
             top: 50,
-            left: 16,
-            right: 16,
+            left: AppTokens.spaceMd,
+            right: AppTokens.spaceMd,
             child: _buildHeaderEtaCard(isDark),
           ),
 
-          // 3. Right Floating Action Buttons Stack (Recenter, Layers, Call, SOS)
+          // 3. Floating Action Buttons Stack
           Positioned(
-            right: 16,
+            right: AppTokens.spaceMd,
             bottom: 240,
             child: _buildFloatingActionButtonsStack(isDark),
           ),
 
-          // 4. Draggable Emergency Bottom Sheet (Hospital & Ambulance Details)
+          // 4. Draggable Emergency Bottom Sheet
           _buildDraggableBottomSheet(isDark),
         ],
       ),
     );
   }
 
-  // ==========================================
-  // 1. GOOGLE MAPS INTERACTIVE RADAR CANVAS
-  // ==========================================
   Widget _buildGoogleMapsCanvas(bool isDark) {
     final LatLng userPos = GoogleMapsConfig.cityPickupLocations[_selectedCity] ?? GoogleMapsConfig.defaultPickupLocation;
     final LatLng ambPos = LatLng(userPos.latitude - 0.005, userPos.longitude - 0.004);
 
     final Set<Marker> markers = {
-      // User Location Marker
       Marker(
         markerId: const MarkerId('user_location'),
         position: userPos,
@@ -250,7 +248,6 @@ class _LiveEmergencyMapScreenState extends State<LiveEmergencyMapScreen> {
           snippet: 'Emergency Scene (Pulse Location)',
         ),
       ),
-      // Dispatched ALS Unit Marker
       Marker(
         markerId: const MarkerId('active_ambulance'),
         position: ambPos,
@@ -262,7 +259,6 @@ class _LiveEmergencyMapScreenState extends State<LiveEmergencyMapScreen> {
       ),
     };
 
-    // Add Hospital Markers
     for (int i = 0; i < _hospitals.length; i++) {
       final h = _hospitals[i];
       final LatLng? hPos = GoogleMapsConfig.hospitalLocations[h['name']];
@@ -320,9 +316,6 @@ class _LiveEmergencyMapScreenState extends State<LiveEmergencyMapScreen> {
     );
   }
 
-  // ==========================================
-  // 2. TOP HEADER ETA & EMERGENCY CARD
-  // ==========================================
   Widget _buildHeaderEtaCard(bool isDark) {
     final EsiSeverityLevel level = EsiSeverityLevel.esi1;
     final safeIndex = _selectedHospitalIndex < _hospitals.length ? _selectedHospitalIndex : 0;
@@ -330,7 +323,6 @@ class _LiveEmergencyMapScreenState extends State<LiveEmergencyMapScreen> {
 
     return Column(
       children: [
-        // Emergency Status Pill & Back Button Row
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -347,13 +339,7 @@ class _LiveEmergencyMapScreenState extends State<LiveEmergencyMapScreen> {
               decoration: BoxDecoration(
                 color: level.color,
                 borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: level.color.withValues(alpha: 0.4),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+                boxShadow: AppTokens.shadowEmergency(isDark),
               ),
               child: Row(
                 children: [
@@ -361,7 +347,7 @@ class _LiveEmergencyMapScreenState extends State<LiveEmergencyMapScreen> {
                   const SizedBox(width: 6),
                   Text(
                     'ESI LEVEL 1: ${level.name.toUpperCase()}',
-                    style: const TextStyle(
+                    style: GoogleFonts.poppins(
                       fontSize: 12,
                       fontWeight: FontWeight.w900,
                       color: Colors.white,
@@ -376,7 +362,7 @@ class _LiveEmergencyMapScreenState extends State<LiveEmergencyMapScreen> {
 
         const SizedBox(height: 10),
 
-        // Tamil Nadu City Selection Chips Bar
+        // City Chips Bar
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
@@ -394,7 +380,7 @@ class _LiveEmergencyMapScreenState extends State<LiveEmergencyMapScreen> {
                   ),
                   label: Text(
                     city,
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
                       color: isSelected ? Colors.white : (isDark ? Colors.white : AppColors.neutral900),
@@ -425,22 +411,16 @@ class _LiveEmergencyMapScreenState extends State<LiveEmergencyMapScreen> {
           ),
         ),
 
-        const SizedBox(height: 12),
+        const SizedBox(height: AppTokens.spaceSm),
 
         // Live ETA Banner Card
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: AppTokens.spaceMd, vertical: 12),
           decoration: BoxDecoration(
             color: isDark ? AppColors.darkSurfaceCard : Colors.white,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: AppTokens.borderRadiusLg,
             border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.neutral200),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.15),
-                blurRadius: 16,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            boxShadow: AppTokens.shadowMd(isDark),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -461,7 +441,7 @@ class _LiveEmergencyMapScreenState extends State<LiveEmergencyMapScreen> {
                     children: [
                       Text(
                         'Ambulance ETA: ${selectedHospital['eta']}',
-                        style: const TextStyle(
+                        style: GoogleFonts.poppins(
                           fontSize: 15,
                           fontWeight: FontWeight.w800,
                           color: AppColors.esi1Critical,
@@ -469,7 +449,7 @@ class _LiveEmergencyMapScreenState extends State<LiveEmergencyMapScreen> {
                       ),
                       Text(
                         'To ${selectedHospital['name']} (${selectedHospital['distance']})',
-                        style: const TextStyle(fontSize: 11, color: AppColors.neutral600),
+                        style: GoogleFonts.poppins(fontSize: 11, color: AppColors.neutral600),
                       ),
                     ],
                   ),
@@ -497,13 +477,9 @@ class _LiveEmergencyMapScreenState extends State<LiveEmergencyMapScreen> {
     );
   }
 
-  // ==========================================
-  // 3. FLOATING ACTION BUTTONS STACK
-  // ==========================================
   Widget _buildFloatingActionButtonsStack(bool isDark) {
     return Column(
       children: [
-        // Layer Switcher (Light / Dark Map)
         FloatingActionButton.small(
           heroTag: 'fab_layer',
           backgroundColor: isDark ? AppColors.darkSurfaceCard : Colors.white,
@@ -514,8 +490,6 @@ class _LiveEmergencyMapScreenState extends State<LiveEmergencyMapScreen> {
           child: Icon(_isDarkMapLayer ? Icons.light_mode_outlined : Icons.dark_mode_outlined),
         ),
         const SizedBox(height: 10),
-
-        // GPS Recenter Button
         FloatingActionButton.small(
           heroTag: 'fab_gps',
           backgroundColor: isDark ? AppColors.darkSurfaceCard : Colors.white,
@@ -528,8 +502,6 @@ class _LiveEmergencyMapScreenState extends State<LiveEmergencyMapScreen> {
           child: const Icon(Icons.my_location_rounded),
         ),
         const SizedBox(height: 10),
-
-        // Call Paramedic Direct FAB
         FloatingActionButton(
           heroTag: 'fab_call',
           backgroundColor: AppColors.esi4LessUrgent,
@@ -545,36 +517,26 @@ class _LiveEmergencyMapScreenState extends State<LiveEmergencyMapScreen> {
     );
   }
 
-  // ==========================================
-  // 4. DRAGGABLE EMERGENCY BOTTOM SHEET
-  // ==========================================
   Widget _buildDraggableBottomSheet(bool isDark) {
     final safeIndex = _selectedHospitalIndex < _hospitals.length ? _selectedHospitalIndex : 0;
     final selectedHospital = _hospitals[safeIndex];
 
     return DraggableScrollableSheet(
-      initialChildSize: 0.32,
-      minChildSize: 0.18,
-      maxChildSize: 0.70,
+      initialChildSize: 0.35,
+      minChildSize: 0.20,
+      maxChildSize: 0.72,
       builder: (context, scrollController) {
         return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: AppTokens.spaceLg, vertical: 12),
           decoration: BoxDecoration(
             color: isDark ? AppColors.darkCanvas : Colors.white,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.2),
-                blurRadius: 20,
-                offset: const Offset(0, -4),
-              ),
-            ],
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(AppTokens.radius2Xl)),
+            boxShadow: AppTokens.shadowLg(isDark),
           ),
           child: ListView(
             controller: scrollController,
             physics: const BouncingScrollPhysics(),
             children: [
-              // Sheet Drag Handle
               Center(
                 child: Container(
                   width: 40,
@@ -586,9 +548,8 @@ class _LiveEmergencyMapScreenState extends State<LiveEmergencyMapScreen> {
                 ),
               ),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: AppTokens.spaceMd),
 
-              // Selected Destination Hospital Profile
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -598,7 +559,7 @@ class _LiveEmergencyMapScreenState extends State<LiveEmergencyMapScreen> {
                       children: [
                         Text(
                           selectedHospital['name'] as String,
-                          style: TextStyle(
+                          style: GoogleFonts.poppins(
                             fontSize: 18,
                             fontWeight: FontWeight.w800,
                             color: isDark ? Colors.white : AppColors.neutral900,
@@ -607,7 +568,7 @@ class _LiveEmergencyMapScreenState extends State<LiveEmergencyMapScreen> {
                         const SizedBox(height: 2),
                         Text(
                           '${selectedHospital['traumaLevel']} • ${selectedHospital['distance']} away',
-                          style: const TextStyle(fontSize: 12, color: AppColors.neutral600),
+                          style: GoogleFonts.poppins(fontSize: 12, color: AppColors.neutral600),
                         ),
                       ],
                     ),
@@ -620,7 +581,7 @@ class _LiveEmergencyMapScreenState extends State<LiveEmergencyMapScreen> {
                     ),
                     child: Text(
                       selectedHospital['icuBeds'] as String,
-                      style: TextStyle(
+                      style: GoogleFonts.poppins(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                         color: selectedHospital['color'] as Color,
@@ -630,9 +591,8 @@ class _LiveEmergencyMapScreenState extends State<LiveEmergencyMapScreen> {
                 ],
               ),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: AppTokens.spaceMd),
 
-              // Action Row: Reserve Bed & Call ER
               Row(
                 children: [
                   Expanded(
@@ -671,16 +631,13 @@ class _LiveEmergencyMapScreenState extends State<LiveEmergencyMapScreen> {
                 ],
               ),
 
-              const SizedBox(height: 20),
-
+              const SizedBox(height: AppTokens.spaceLg),
               Divider(color: isDark ? AppColors.darkBorder : AppColors.neutral200),
-
               const SizedBox(height: 12),
 
-              // Nearby ER Hospitals Selection List
               Text(
                 'Nearby ER Hospitals Radar',
-                style: TextStyle(
+                style: GoogleFonts.poppins(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
                   color: isDark ? Colors.white : AppColors.neutral900,
@@ -719,18 +676,18 @@ class _LiveEmergencyMapScreenState extends State<LiveEmergencyMapScreen> {
                               children: [
                                 Text(
                                   h['name'] as String,
-                                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+                                  style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w700),
                                 ),
                                 Text(
                                   '${h['traumaLevel']} • ${h['distance']}',
-                                  style: const TextStyle(fontSize: 11, color: AppColors.neutral600),
+                                  style: GoogleFonts.poppins(fontSize: 11, color: AppColors.neutral600),
                                 ),
                               ],
                             ),
                           ),
                           Text(
                             h['icuBeds'] as String,
-                            style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: h['color'] as Color),
+                            style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.bold, color: h['color'] as Color),
                           ),
                         ],
                       ),

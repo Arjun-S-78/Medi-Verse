@@ -115,19 +115,22 @@ abstract class AppTheme {
       useMaterial3: true,
       brightness: Brightness.dark,
       colorScheme: const ColorScheme.dark(
-        primary: AppColors.primaryAccent,
-        primaryContainer: Color(0xFF003853),
-        secondary: AppColors.secondary500,
+        primary: AppColors.heroPurple,
+        primaryContainer: Color(0xFF161E36),
+        secondary: AppColors.heroCyan,
+        secondaryContainer: Color(0xFF0F172A),
         surface: AppColors.darkSurfaceCard,
         error: AppColors.esi1Critical,
-        onPrimary: AppColors.neutral900,
+        onPrimary: Colors.white,
         onSurface: AppColors.neutral100,
+        surfaceContainerHighest: Color(0xFF161E36),
       ),
       scaffoldBackgroundColor: AppColors.darkCanvas,
+      canvasColor: AppColors.darkCanvas,
       fontFamily: GoogleFonts.poppins().fontFamily,
       textTheme: AppTypography.getTextTheme(isDark: true),
       appBarTheme: AppBarTheme(
-        backgroundColor: AppColors.darkCanvas,
+        backgroundColor: const Color(0xFF0F172A),
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: false,
@@ -139,17 +142,49 @@ abstract class AppTheme {
         ),
       ),
       cardTheme: CardThemeData(
-        color: AppColors.darkSurfaceCard,
+        color: const Color(0xFF161E36),
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
           side: const BorderSide(color: AppColors.darkBorder, width: 1),
         ),
       ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: const Color(0xFF161E36),
+        elevation: 12,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: const BorderSide(color: AppColors.heroPurple, width: 1),
+        ),
+        titleTextStyle: GoogleFonts.poppins(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+        contentTextStyle: GoogleFonts.poppins(color: AppColors.neutral300, fontSize: 14),
+      ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: Color(0xFF161E36),
+        surfaceTintColor: Colors.transparent,
+        modalBackgroundColor: Color(0xFF161E36),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+      ),
+      drawerTheme: const DrawerThemeData(
+        backgroundColor: Color(0xFF090C15),
+        surfaceTintColor: Colors.transparent,
+      ),
+      popupMenuTheme: PopupMenuThemeData(
+        color: const Color(0xFF161E36),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: const BorderSide(color: AppColors.darkBorder),
+        ),
+        textStyle: GoogleFonts.poppins(color: Colors.white, fontSize: 13),
+      ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.darkSurfaceCard,
+        fillColor: const Color(0xFF161E36),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        hintStyle: GoogleFonts.poppins(color: AppColors.neutral400, fontSize: 13),
+        labelStyle: GoogleFonts.poppins(color: AppColors.neutral300, fontSize: 13),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.darkBorder, width: 1),
@@ -160,7 +195,7 @@ abstract class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.primaryAccent, width: 2),
+          borderSide: BorderSide(color: AppColors.heroPurple.withValues(alpha: 0.8), width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -169,8 +204,8 @@ abstract class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primaryAccent,
-          foregroundColor: AppColors.neutral900,
+          backgroundColor: AppColors.heroPurple,
+          foregroundColor: Colors.white,
           minimumSize: const Size.fromHeight(48),
           elevation: 0,
           shape: RoundedRectangleBorder(
@@ -184,9 +219,9 @@ abstract class AppTheme {
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.primaryAccent,
+          foregroundColor: AppColors.heroPurple,
           minimumSize: const Size.fromHeight(48),
-          side: const BorderSide(color: AppColors.primaryAccent, width: 1.5),
+          side: const BorderSide(color: AppColors.heroPurple, width: 1.5),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -195,6 +230,23 @@ abstract class AppTheme {
             fontWeight: FontWeight.w600,
           ),
         ),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: const Color(0xFF161E36),
+        contentTextStyle: GoogleFonts.poppins(color: Colors.white, fontSize: 13),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12), side: const BorderSide(color: AppColors.darkBorder)),
+        behavior: SnackBarBehavior.floating,
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: const Color(0xFF1F2A3E),
+        disabledColor: const Color(0xFF161E36),
+        selectedColor: AppColors.heroPurple,
+        secondarySelectedColor: AppColors.heroPurple,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        labelStyle: GoogleFonts.poppins(color: Colors.white, fontSize: 12),
+        secondaryLabelStyle: GoogleFonts.poppins(color: Colors.white, fontSize: 12),
+        brightness: Brightness.dark,
+        side: const BorderSide(color: AppColors.darkBorder),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: AppColors.esi1Critical,
@@ -205,9 +257,9 @@ abstract class AppTheme {
         ),
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: AppColors.darkSurfaceCard,
-        selectedItemColor: AppColors.primaryAccent,
-        unselectedItemColor: AppColors.neutral600,
+        backgroundColor: Color(0xFF0F172A),
+        selectedItemColor: AppColors.heroPurple,
+        unselectedItemColor: AppColors.neutral400,
         elevation: 8,
         type: BottomNavigationBarType.fixed,
       ),

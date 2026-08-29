@@ -1,0 +1,1426 @@
+[
+  {
+    "case_id": "SYN-13356886",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 53,
+      "gender": "Male",
+      "blood_group": "B-"
+    },
+    "chief_complaint": "I don't know what's happening but my chest started hurting suddenly while sitting on the couch.",
+    "symptoms": [
+      "Chest Pain",
+      "Chest Pain"
+    ],
+    "symptom_onset": "30 minutes ago",
+    "symptom_duration": "Ongoing",
+    "severity": "CRITICAL",
+    "vital_signs": {
+      "heart_rate": 126,
+      "spo2": 85,
+      "bp_systolic": 87,
+      "bp_diastolic": 42,
+      "temp_c": 37.1
+    },
+    "medical_history": [
+      "Coronary Artery Disease",
+      "High Cholesterol"
+    ],
+    "medications": [
+      "Aspirin 75mg",
+      "Atorvastatin 20mg"
+    ],
+    "emergency_red_flags": [
+      "Crushing Chest Pain",
+      "Radiation to Left Arm",
+      "Sudden Onset"
+    ],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA, your AI nurse assistant. How can I help you today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "I don't know what's happening but my chest started hurting suddenly while sitting on the couch."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "I understand you have chest discomfort. Are you experiencing shortness of breath, sweating, or radiation to your left arm or jaw?"
+      },
+      {
+        "turn": 4,
+        "speaker": "patient",
+        "text": "Yes, I am sweating and my arm feels heavy."
+      }
+    ],
+    "structured_clinical_info": {
+      "chestPain": true,
+      "breathingDifficulty": false,
+      "unconsciousness": false,
+      "painSeverity": "severe",
+      "painScore": 9,
+      "suddenOnset": true,
+      "radiationLeftArm": true
+    },
+    "expected_triage_category": "CRITICAL",
+    "expected_escalation_action": "Dispatch Immediate ALS Emergency Ambulance & Alert Nearest Trauma Center",
+    "generation_metadata": {
+      "generator_version": "1.0.0",
+      "category": "Chest Pain",
+      "seed": 42,
+      "created_at": "2026-08-27T14:33:59.546032"
+    }
+  },
+  {
+    "case_id": "SYN-13999315",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 29,
+      "gender": "Male",
+      "blood_group": "B-"
+    },
+    "chief_complaint": "I'm struggling... to get... any air in...",
+    "symptoms": [
+      "Breathing Difficulty"
+    ],
+    "symptom_onset": "30 minutes ago",
+    "symptom_duration": "Ongoing",
+    "severity": "HIGH",
+    "vital_signs": {
+      "heart_rate": 124,
+      "spo2": 90,
+      "bp_systolic": 157,
+      "bp_diastolic": 93,
+      "temp_c": 38.1
+    },
+    "medical_history": [
+      "No known past medical history"
+    ],
+    "medications": [],
+    "emergency_red_flags": [
+      "Severe Respiratory Distress",
+      "Inability to speak full sentences"
+    ],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA, your AI nurse assistant. How can I help you today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "I'm struggling... to get... any air in..."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "I see you are having trouble breathing. Can you speak in full sentences, and do you have asthma or heart disease?"
+      },
+      {
+        "turn": 4,
+        "speaker": "patient",
+        "text": "Hard to speak... gasping for air."
+      }
+    ],
+    "structured_clinical_info": {
+      "chestPain": false,
+      "breathingDifficulty": true,
+      "unconsciousness": false,
+      "painSeverity": "severe",
+      "painScore": 7,
+      "suddenOnset": true,
+      "radiationLeftArm": null
+    },
+    "expected_triage_category": "HIGH",
+    "expected_escalation_action": "Dispatch BLS Emergency Ambulance & Reserve Urgent ER Bay",
+    "generation_metadata": {
+      "generator_version": "1.0.0",
+      "category": "Breathing Difficulty",
+      "seed": 42,
+      "created_at": "2026-08-27T14:33:59.546086"
+    }
+  },
+  {
+    "case_id": "SYN-39587039",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 75,
+      "gender": "Other",
+      "blood_group": "O+"
+    },
+    "chief_complaint": "Fell off a 12 foot ladder onto concrete, severe hip and neck pain.",
+    "symptoms": [
+      "Major Trauma"
+    ],
+    "symptom_onset": "2 days ago",
+    "symptom_duration": "Ongoing",
+    "severity": "MODERATE",
+    "vital_signs": {
+      "heart_rate": 90,
+      "spo2": 96,
+      "bp_systolic": 131,
+      "bp_diastolic": 85,
+      "temp_c": 37.2
+    },
+    "medical_history": [
+      "Hypertension",
+      "Type 2 Diabetes"
+    ],
+    "medications": [
+      "Amlodipine 5mg",
+      "Telmisartan 40mg",
+      "Metformin 500mg"
+    ],
+    "emergency_red_flags": [
+      "High Mechanism Trauma",
+      "Full Thickness Burn"
+    ],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA, your AI nurse assistant. How can I help you today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "Fell off a 12 foot ladder onto concrete, severe hip and neck pain."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you. On a scale of 0 to 10, how severe is your pain or discomfort right now?"
+      },
+      {
+        "turn": 4,
+        "speaker": "patient",
+        "text": "I'd rate it an 3 out of 10."
+      }
+    ],
+    "structured_clinical_info": {
+      "chestPain": false,
+      "breathingDifficulty": false,
+      "unconsciousness": false,
+      "painSeverity": "moderate",
+      "painScore": 4,
+      "suddenOnset": false,
+      "radiationLeftArm": false
+    },
+    "expected_triage_category": "MODERATE",
+    "expected_escalation_action": "Recommend Urgent Clinic Visit within 2 Hours",
+    "generation_metadata": {
+      "generator_version": "1.0.0",
+      "category": "Major Trauma",
+      "seed": 42,
+      "created_at": "2026-08-27T14:33:59.546117"
+    }
+  },
+  {
+    "case_id": "SYN-55176955",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 31,
+      "gender": "Male",
+      "blood_group": "AB+"
+    },
+    "chief_complaint": "I cut my arm deep with a power tool and blood is pulsing out everywhere!",
+    "symptoms": [
+      "Severe Bleeding"
+    ],
+    "symptom_onset": "2 days ago",
+    "symptom_duration": "Ongoing",
+    "severity": "LOW",
+    "vital_signs": {
+      "heart_rate": 79,
+      "spo2": 99,
+      "bp_systolic": 119,
+      "bp_diastolic": 74,
+      "temp_c": 37.0
+    },
+    "medical_history": [
+      "Asthma"
+    ],
+    "medications": [
+      "Salbutamol Inhaler"
+    ],
+    "emergency_red_flags": [
+      "Active Heavy Arterial Bleeding"
+    ],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA, your AI nurse assistant. How can I help you today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "I cut my arm deep with a power tool and blood is pulsing out everywhere!"
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you. On a scale of 0 to 10, how severe is your pain or discomfort right now?"
+      },
+      {
+        "turn": 4,
+        "speaker": "patient",
+        "text": "I'd rate it an 3 out of 10."
+      }
+    ],
+    "structured_clinical_info": {
+      "chestPain": false,
+      "breathingDifficulty": false,
+      "unconsciousness": false,
+      "painSeverity": "mild",
+      "painScore": 2,
+      "suddenOnset": false,
+      "radiationLeftArm": true
+    },
+    "expected_triage_category": "LOW",
+    "expected_escalation_action": "Routine Tele-consultation & Home Monitoring Advice",
+    "generation_metadata": {
+      "generator_version": "1.0.0",
+      "category": "Severe Bleeding",
+      "seed": 42,
+      "created_at": "2026-08-27T14:33:59.546140"
+    }
+  },
+  {
+    "case_id": "SYN-81971316",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 33,
+      "gender": "Female",
+      "blood_group": "A-"
+    },
+    "chief_complaint": "Fell off a 12 foot ladder onto concrete, severe hip and neck pain.",
+    "symptoms": [
+      "Burns"
+    ],
+    "symptom_onset": "30 minutes ago",
+    "symptom_duration": "Ongoing",
+    "severity": "CRITICAL",
+    "vital_signs": {
+      "heart_rate": 124,
+      "spo2": 89,
+      "bp_systolic": 99,
+      "bp_diastolic": 61,
+      "temp_c": 38.0
+    },
+    "medical_history": [
+      "No known past medical history"
+    ],
+    "medications": [],
+    "emergency_red_flags": [
+      "High Mechanism Trauma",
+      "Full Thickness Burn"
+    ],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA, your AI nurse assistant. How can I help you today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "Fell off a 12 foot ladder onto concrete, severe hip and neck pain."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you. On a scale of 0 to 10, how severe is your pain or discomfort right now?"
+      },
+      {
+        "turn": 4,
+        "speaker": "patient",
+        "text": "I'd rate it an 8 out of 10."
+      }
+    ],
+    "structured_clinical_info": {
+      "chestPain": false,
+      "breathingDifficulty": false,
+      "unconsciousness": false,
+      "painSeverity": "severe",
+      "painScore": 9,
+      "suddenOnset": true,
+      "radiationLeftArm": null
+    },
+    "expected_triage_category": "CRITICAL",
+    "expected_escalation_action": "Dispatch Immediate ALS Emergency Ambulance & Alert Nearest Trauma Center",
+    "generation_metadata": {
+      "generator_version": "1.0.0",
+      "category": "Burns",
+      "seed": 42,
+      "created_at": "2026-08-27T14:33:59.546161"
+    }
+  },
+  {
+    "case_id": "SYN-16150444",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 47,
+      "gender": "Female",
+      "blood_group": "A-"
+    },
+    "chief_complaint": "High temperature 39.5C with shivering and body pain.",
+    "symptoms": [
+      "Fever"
+    ],
+    "symptom_onset": "30 minutes ago",
+    "symptom_duration": "Ongoing",
+    "severity": "HIGH",
+    "vital_signs": {
+      "heart_rate": 108,
+      "spo2": 93,
+      "bp_systolic": 148,
+      "bp_diastolic": 97,
+      "temp_c": 38.0
+    },
+    "medical_history": [
+      "COPD"
+    ],
+    "medications": [
+      "Tiotropium Inhaler"
+    ],
+    "emergency_red_flags": [],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA, your AI nurse assistant. How can I help you today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "High temperature 39.5C with shivering and body pain."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you. On a scale of 0 to 10, how severe is your pain or discomfort right now?"
+      },
+      {
+        "turn": 4,
+        "speaker": "patient",
+        "text": "I'd rate it an 8 out of 10."
+      }
+    ],
+    "structured_clinical_info": {
+      "chestPain": false,
+      "breathingDifficulty": false,
+      "unconsciousness": false,
+      "painSeverity": "severe",
+      "painScore": 7,
+      "suddenOnset": true,
+      "radiationLeftArm": null
+    },
+    "expected_triage_category": "HIGH",
+    "expected_escalation_action": "Dispatch BLS Emergency Ambulance & Reserve Urgent ER Bay",
+    "generation_metadata": {
+      "generator_version": "1.0.0",
+      "category": "Fever",
+      "seed": 42,
+      "created_at": "2026-08-27T14:33:59.546179"
+    }
+  },
+  {
+    "case_id": "SYN-31831063",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 65,
+      "gender": "Female",
+      "blood_group": "B-"
+    },
+    "chief_complaint": "Mild stomach cramps and feeling nauseous.",
+    "symptoms": [
+      "Abdominal Pain"
+    ],
+    "symptom_onset": "2 days ago",
+    "symptom_duration": "Ongoing",
+    "severity": "MODERATE",
+    "vital_signs": {
+      "heart_rate": 87,
+      "spo2": 96,
+      "bp_systolic": 135,
+      "bp_diastolic": 82,
+      "temp_c": 37.5
+    },
+    "medical_history": [
+      "Epilepsy"
+    ],
+    "medications": [
+      "Sodium Valproate 500mg"
+    ],
+    "emergency_red_flags": [],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA, your AI nurse assistant. How can I help you today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "Mild stomach cramps and feeling nauseous."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you. On a scale of 0 to 10, how severe is your pain or discomfort right now?"
+      },
+      {
+        "turn": 4,
+        "speaker": "patient",
+        "text": "I'd rate it an 3 out of 10."
+      }
+    ],
+    "structured_clinical_info": {
+      "chestPain": false,
+      "breathingDifficulty": false,
+      "unconsciousness": false,
+      "painSeverity": "moderate",
+      "painScore": 4,
+      "suddenOnset": false,
+      "radiationLeftArm": false
+    },
+    "expected_triage_category": "MODERATE",
+    "expected_escalation_action": "Recommend Urgent Clinic Visit within 2 Hours",
+    "generation_metadata": {
+      "generator_version": "1.0.0",
+      "category": "Abdominal Pain",
+      "seed": 42,
+      "created_at": "2026-08-27T14:33:59.546193"
+    }
+  },
+  {
+    "case_id": "SYN-31931511",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 77,
+      "gender": "Female",
+      "blood_group": "O+"
+    },
+    "chief_complaint": "I ate peanuts by mistake, my lips are swelling up fast and my throat feels tight!",
+    "symptoms": [
+      "Allergic Reaction"
+    ],
+    "symptom_onset": "2 days ago",
+    "symptom_duration": "Ongoing",
+    "severity": "LOW",
+    "vital_signs": {
+      "heart_rate": 75,
+      "spo2": 99,
+      "bp_systolic": 122,
+      "bp_diastolic": 70,
+      "temp_c": 36.6
+    },
+    "medical_history": [
+      "No known past medical history"
+    ],
+    "medications": [],
+    "emergency_red_flags": [
+      "Anaphylaxis",
+      "Lip/Tongue Swelling"
+    ],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA, your AI nurse assistant. How can I help you today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "I ate peanuts by mistake, my lips are swelling up fast and my throat feels tight!"
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you. On a scale of 0 to 10, how severe is your pain or discomfort right now?"
+      },
+      {
+        "turn": 4,
+        "speaker": "patient",
+        "text": "I'd rate it an 3 out of 10."
+      }
+    ],
+    "structured_clinical_info": {
+      "chestPain": false,
+      "breathingDifficulty": false,
+      "unconsciousness": false,
+      "painSeverity": "mild",
+      "painScore": 2,
+      "suddenOnset": false,
+      "radiationLeftArm": false
+    },
+    "expected_triage_category": "LOW",
+    "expected_escalation_action": "Routine Tele-consultation & Home Monitoring Advice",
+    "generation_metadata": {
+      "generator_version": "1.0.0",
+      "category": "Allergic Reaction",
+      "seed": 42,
+      "created_at": "2026-08-27T14:33:59.546206"
+    }
+  },
+  {
+    "case_id": "SYN-52339391",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 69,
+      "gender": "Female",
+      "blood_group": "A-"
+    },
+    "chief_complaint": "My mother suddenly can't speak properly and her left arm won't move.",
+    "symptoms": [
+      "Neurological Symptoms"
+    ],
+    "symptom_onset": "30 minutes ago",
+    "symptom_duration": "Ongoing",
+    "severity": "CRITICAL",
+    "vital_signs": {
+      "heart_rate": 144,
+      "spo2": 88,
+      "bp_systolic": 90,
+      "bp_diastolic": 56,
+      "temp_c": 38.3
+    },
+    "medical_history": [
+      "COPD"
+    ],
+    "medications": [
+      "Tiotropium Inhaler"
+    ],
+    "emergency_red_flags": [
+      "Facial Droop",
+      "Speech Slurring",
+      "Active Seizure"
+    ],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA, your AI nurse assistant. How can I help you today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "My mother suddenly can't speak properly and her left arm won't move."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you. On a scale of 0 to 10, how severe is your pain or discomfort right now?"
+      },
+      {
+        "turn": 4,
+        "speaker": "patient",
+        "text": "I'd rate it an 8 out of 10."
+      }
+    ],
+    "structured_clinical_info": {
+      "chestPain": false,
+      "breathingDifficulty": false,
+      "unconsciousness": false,
+      "painSeverity": "severe",
+      "painScore": 9,
+      "suddenOnset": true,
+      "radiationLeftArm": true
+    },
+    "expected_triage_category": "CRITICAL",
+    "expected_escalation_action": "Dispatch Immediate ALS Emergency Ambulance & Alert Nearest Trauma Center",
+    "generation_metadata": {
+      "generator_version": "1.0.0",
+      "category": "Neurological Symptoms",
+      "seed": 42,
+      "created_at": "2026-08-27T14:33:59.546221"
+    }
+  },
+  {
+    "case_id": "SYN-96282117",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 76,
+      "gender": "Male",
+      "blood_group": "O+"
+    },
+    "chief_complaint": "My mother suddenly can't speak properly and her left arm won't move.",
+    "symptoms": [
+      "Seizures"
+    ],
+    "symptom_onset": "30 minutes ago",
+    "symptom_duration": "Ongoing",
+    "severity": "HIGH",
+    "vital_signs": {
+      "heart_rate": 112,
+      "spo2": 92,
+      "bp_systolic": 163,
+      "bp_diastolic": 99,
+      "temp_c": 37.5
+    },
+    "medical_history": [
+      "Coronary Artery Disease",
+      "High Cholesterol"
+    ],
+    "medications": [
+      "Aspirin 75mg",
+      "Atorvastatin 20mg"
+    ],
+    "emergency_red_flags": [
+      "Facial Droop",
+      "Speech Slurring",
+      "Active Seizure"
+    ],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA, your AI nurse assistant. How can I help you today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "My mother suddenly can't speak properly and her left arm won't move."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you. On a scale of 0 to 10, how severe is your pain or discomfort right now?"
+      },
+      {
+        "turn": 4,
+        "speaker": "patient",
+        "text": "I'd rate it an 8 out of 10."
+      }
+    ],
+    "structured_clinical_info": {
+      "chestPain": false,
+      "breathingDifficulty": false,
+      "unconsciousness": false,
+      "painSeverity": "severe",
+      "painScore": 7,
+      "suddenOnset": true,
+      "radiationLeftArm": true
+    },
+    "expected_triage_category": "HIGH",
+    "expected_escalation_action": "Dispatch BLS Emergency Ambulance & Reserve Urgent ER Bay",
+    "generation_metadata": {
+      "generator_version": "1.0.0",
+      "category": "Seizures",
+      "seed": 42,
+      "created_at": "2026-08-27T14:33:59.546236"
+    }
+  },
+  {
+    "case_id": "SYN-58586340",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 46,
+      "gender": "Male",
+      "blood_group": "Unknown"
+    },
+    "chief_complaint": "I passed out for a minute earlier, but I'm fine now.",
+    "symptoms": [
+      "Unconsciousness"
+    ],
+    "symptom_onset": "2 days ago",
+    "symptom_duration": "Ongoing",
+    "severity": "MODERATE",
+    "vital_signs": {
+      "heart_rate": 86,
+      "spo2": 94,
+      "bp_systolic": 127,
+      "bp_diastolic": 82,
+      "temp_c": 37.9
+    },
+    "medical_history": [
+      "Asthma"
+    ],
+    "medications": [
+      "Salbutamol Inhaler"
+    ],
+    "emergency_red_flags": [
+      "Recent Loss of Consciousness",
+      "Unresponsive Period"
+    ],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA, your AI nurse assistant. How can I help you today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "I passed out for a minute earlier, but I'm fine now."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you. On a scale of 0 to 10, how severe is your pain or discomfort right now?"
+      },
+      {
+        "turn": 4,
+        "speaker": "patient",
+        "text": "I'd rate it an 3 out of 10."
+      }
+    ],
+    "structured_clinical_info": {
+      "chestPain": false,
+      "breathingDifficulty": false,
+      "unconsciousness": true,
+      "painSeverity": "moderate",
+      "painScore": 4,
+      "suddenOnset": false,
+      "radiationLeftArm": false
+    },
+    "expected_triage_category": "MODERATE",
+    "expected_escalation_action": "Recommend Urgent Clinic Visit within 2 Hours",
+    "generation_metadata": {
+      "generator_version": "1.0.0",
+      "category": "Unconsciousness",
+      "seed": 42,
+      "created_at": "2026-08-27T14:33:59.546249"
+    }
+  },
+  {
+    "case_id": "SYN-90048665",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 26,
+      "gender": "Female",
+      "blood_group": "AB+"
+    },
+    "chief_complaint": "Stubbed my pinky toe on the bed frame, it's bruised.",
+    "symptoms": [
+      "Minor Injuries"
+    ],
+    "symptom_onset": "2 days ago",
+    "symptom_duration": "Ongoing",
+    "severity": "LOW",
+    "vital_signs": {
+      "heart_rate": 84,
+      "spo2": 99,
+      "bp_systolic": 118,
+      "bp_diastolic": 70,
+      "temp_c": 36.9
+    },
+    "medical_history": [
+      "GERD"
+    ],
+    "medications": [
+      "Pantoprazole 40mg"
+    ],
+    "emergency_red_flags": [],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA, your AI nurse assistant. How can I help you today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "Stubbed my pinky toe on the bed frame, it's bruised."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you. On a scale of 0 to 10, how severe is your pain or discomfort right now?"
+      },
+      {
+        "turn": 4,
+        "speaker": "patient",
+        "text": "I'd rate it an 3 out of 10."
+      }
+    ],
+    "structured_clinical_info": {
+      "chestPain": false,
+      "breathingDifficulty": false,
+      "unconsciousness": false,
+      "painSeverity": "mild",
+      "painScore": 2,
+      "suddenOnset": false,
+      "radiationLeftArm": false
+    },
+    "expected_triage_category": "LOW",
+    "expected_escalation_action": "Routine Tele-consultation & Home Monitoring Advice",
+    "generation_metadata": {
+      "generator_version": "1.0.0",
+      "category": "Minor Injuries",
+      "seed": 42,
+      "created_at": "2026-08-27T14:33:59.546262"
+    }
+  },
+  {
+    "case_id": "SYN-82070937",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 52,
+      "gender": "Other",
+      "blood_group": "O-"
+    },
+    "chief_complaint": "I have a mild runny nose and slight headache.",
+    "symptoms": [
+      "Low-Risk Complaints"
+    ],
+    "symptom_onset": "30 minutes ago",
+    "symptom_duration": "Ongoing",
+    "severity": "CRITICAL",
+    "vital_signs": {
+      "heart_rate": 124,
+      "spo2": 87,
+      "bp_systolic": 85,
+      "bp_diastolic": 64,
+      "temp_c": 36.0
+    },
+    "medical_history": [
+      "Asthma"
+    ],
+    "medications": [
+      "Salbutamol Inhaler"
+    ],
+    "emergency_red_flags": [],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA, your AI nurse assistant. How can I help you today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "I have a mild runny nose and slight headache."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you. On a scale of 0 to 10, how severe is your pain or discomfort right now?"
+      },
+      {
+        "turn": 4,
+        "speaker": "patient",
+        "text": "I'd rate it an 8 out of 10."
+      }
+    ],
+    "structured_clinical_info": {
+      "chestPain": false,
+      "breathingDifficulty": false,
+      "unconsciousness": false,
+      "painSeverity": "severe",
+      "painScore": 9,
+      "suddenOnset": true,
+      "radiationLeftArm": null
+    },
+    "expected_triage_category": "CRITICAL",
+    "expected_escalation_action": "Dispatch Immediate ALS Emergency Ambulance & Alert Nearest Trauma Center",
+    "generation_metadata": {
+      "generator_version": "1.0.0",
+      "category": "Low-Risk Complaints",
+      "seed": 42,
+      "created_at": "2026-08-27T14:33:59.546275"
+    }
+  },
+  {
+    "case_id": "SYN-77187530",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 40,
+      "gender": "Other",
+      "blood_group": "A-"
+    },
+    "chief_complaint": "I have a mild runny nose and slight headache.",
+    "symptoms": [
+      "Multiple Simultaneous Symptoms"
+    ],
+    "symptom_onset": "30 minutes ago",
+    "symptom_duration": "Ongoing",
+    "severity": "HIGH",
+    "vital_signs": {
+      "heart_rate": 125,
+      "spo2": 91,
+      "bp_systolic": 144,
+      "bp_diastolic": 95,
+      "temp_c": 38.3
+    },
+    "medical_history": [
+      "Epilepsy"
+    ],
+    "medications": [
+      "Sodium Valproate 500mg"
+    ],
+    "emergency_red_flags": [],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA, your AI nurse assistant. How can I help you today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "I have a mild runny nose and slight headache."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you. On a scale of 0 to 10, how severe is your pain or discomfort right now?"
+      },
+      {
+        "turn": 4,
+        "speaker": "patient",
+        "text": "I'd rate it an 8 out of 10."
+      }
+    ],
+    "structured_clinical_info": {
+      "chestPain": false,
+      "breathingDifficulty": false,
+      "unconsciousness": false,
+      "painSeverity": "severe",
+      "painScore": 7,
+      "suddenOnset": true,
+      "radiationLeftArm": null
+    },
+    "expected_triage_category": "HIGH",
+    "expected_escalation_action": "Dispatch BLS Emergency Ambulance & Reserve Urgent ER Bay",
+    "generation_metadata": {
+      "generator_version": "1.0.0",
+      "category": "Multiple Simultaneous Symptoms",
+      "seed": 42,
+      "created_at": "2026-08-27T14:33:59.546289"
+    }
+  },
+  {
+    "case_id": "SYN-90388981",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 59,
+      "gender": "Female",
+      "blood_group": "A+"
+    },
+    "chief_complaint": "I feel slightly off today, maybe tired.",
+    "symptoms": [
+      "Ambiguous Presentations"
+    ],
+    "symptom_onset": "2 days ago",
+    "symptom_duration": "Ongoing",
+    "severity": "MODERATE",
+    "vital_signs": {
+      "heart_rate": 96,
+      "spo2": 95,
+      "bp_systolic": 128,
+      "bp_diastolic": 80,
+      "temp_c": 37.1
+    },
+    "medical_history": [
+      "Asthma"
+    ],
+    "medications": [
+      "Salbutamol Inhaler"
+    ],
+    "emergency_red_flags": [],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA, your AI nurse assistant. How can I help you today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "I feel slightly off today, maybe tired."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you. On a scale of 0 to 10, how severe is your pain or discomfort right now?"
+      },
+      {
+        "turn": 4,
+        "speaker": "patient",
+        "text": "I'd rate it an 3 out of 10."
+      }
+    ],
+    "structured_clinical_info": {
+      "chestPain": false,
+      "breathingDifficulty": false,
+      "unconsciousness": false,
+      "painSeverity": "moderate",
+      "painScore": 4,
+      "suddenOnset": false,
+      "radiationLeftArm": false
+    },
+    "expected_triage_category": "MODERATE",
+    "expected_escalation_action": "Recommend Urgent Clinic Visit within 2 Hours",
+    "generation_metadata": {
+      "generator_version": "1.0.0",
+      "category": "Ambiguous Presentations",
+      "seed": 42,
+      "created_at": "2026-08-27T14:33:59.546304"
+    }
+  },
+  {
+    "case_id": "SYN-21496211",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 80,
+      "gender": "Male",
+      "blood_group": "B+"
+    },
+    "chief_complaint": "I've had a slight dull ache near my ribs for two days when I stretch.",
+    "symptoms": [
+      "Chest Pain"
+    ],
+    "symptom_onset": "2 days ago",
+    "symptom_duration": "Ongoing",
+    "severity": "LOW",
+    "vital_signs": {
+      "heart_rate": 83,
+      "spo2": 98,
+      "bp_systolic": 114,
+      "bp_diastolic": 78,
+      "temp_c": 37.1
+    },
+    "medical_history": [
+      "Coronary Artery Disease",
+      "High Cholesterol"
+    ],
+    "medications": [
+      "Aspirin 75mg",
+      "Atorvastatin 20mg"
+    ],
+    "emergency_red_flags": [],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA, your AI nurse assistant. How can I help you today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "I've had a slight dull ache near my ribs for two days when I stretch."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "I understand you have chest discomfort. Are you experiencing shortness of breath, sweating, or radiation to your left arm or jaw?"
+      },
+      {
+        "turn": 4,
+        "speaker": "patient",
+        "text": "No, it just hurts slightly when I take a deep breath."
+      }
+    ],
+    "structured_clinical_info": {
+      "chestPain": true,
+      "breathingDifficulty": false,
+      "unconsciousness": false,
+      "painSeverity": "mild",
+      "painScore": 2,
+      "suddenOnset": false,
+      "radiationLeftArm": false
+    },
+    "expected_triage_category": "LOW",
+    "expected_escalation_action": "Routine Tele-consultation & Home Monitoring Advice",
+    "generation_metadata": {
+      "generator_version": "1.0.0",
+      "category": "Chest Pain",
+      "seed": 42,
+      "created_at": "2026-08-27T14:33:59.546321"
+    }
+  },
+  {
+    "case_id": "SYN-38427073",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 43,
+      "gender": "Other",
+      "blood_group": "O+"
+    },
+    "chief_complaint": "I'm struggling... to get... any air in...",
+    "symptoms": [
+      "Breathing Difficulty"
+    ],
+    "symptom_onset": "30 minutes ago",
+    "symptom_duration": "Ongoing",
+    "severity": "CRITICAL",
+    "vital_signs": {
+      "heart_rate": 151,
+      "spo2": 83,
+      "bp_systolic": 164,
+      "bp_diastolic": 109,
+      "temp_c": 36.7
+    },
+    "medical_history": [
+      "Previous Stroke"
+    ],
+    "medications": [
+      "Clopidogrel 75mg"
+    ],
+    "emergency_red_flags": [
+      "Severe Respiratory Distress",
+      "Inability to speak full sentences"
+    ],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA, your AI nurse assistant. How can I help you today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "I'm struggling... to get... any air in..."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "I see you are having trouble breathing. Can you speak in full sentences, and do you have asthma or heart disease?"
+      },
+      {
+        "turn": 4,
+        "speaker": "patient",
+        "text": "Hard to speak... gasping for air."
+      }
+    ],
+    "structured_clinical_info": {
+      "chestPain": false,
+      "breathingDifficulty": true,
+      "unconsciousness": false,
+      "painSeverity": "severe",
+      "painScore": 9,
+      "suddenOnset": true,
+      "radiationLeftArm": null
+    },
+    "expected_triage_category": "CRITICAL",
+    "expected_escalation_action": "Dispatch Immediate ALS Emergency Ambulance & Alert Nearest Trauma Center",
+    "generation_metadata": {
+      "generator_version": "1.0.0",
+      "category": "Breathing Difficulty",
+      "seed": 42,
+      "created_at": "2026-08-27T14:33:59.546339"
+    }
+  },
+  {
+    "case_id": "SYN-18593410",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 61,
+      "gender": "Male",
+      "blood_group": "B-"
+    },
+    "chief_complaint": "Fell off a 12 foot ladder onto concrete, severe hip and neck pain.",
+    "symptoms": [
+      "Major Trauma"
+    ],
+    "symptom_onset": "30 minutes ago",
+    "symptom_duration": "Ongoing",
+    "severity": "HIGH",
+    "vital_signs": {
+      "heart_rate": 105,
+      "spo2": 90,
+      "bp_systolic": 162,
+      "bp_diastolic": 100,
+      "temp_c": 36.6
+    },
+    "medical_history": [
+      "COPD"
+    ],
+    "medications": [
+      "Tiotropium Inhaler"
+    ],
+    "emergency_red_flags": [
+      "High Mechanism Trauma",
+      "Full Thickness Burn"
+    ],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA, your AI nurse assistant. How can I help you today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "Fell off a 12 foot ladder onto concrete, severe hip and neck pain."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you. On a scale of 0 to 10, how severe is your pain or discomfort right now?"
+      },
+      {
+        "turn": 4,
+        "speaker": "patient",
+        "text": "I'd rate it an 8 out of 10."
+      }
+    ],
+    "structured_clinical_info": {
+      "chestPain": false,
+      "breathingDifficulty": false,
+      "unconsciousness": false,
+      "painSeverity": "severe",
+      "painScore": 7,
+      "suddenOnset": true,
+      "radiationLeftArm": null
+    },
+    "expected_triage_category": "HIGH",
+    "expected_escalation_action": "Dispatch BLS Emergency Ambulance & Reserve Urgent ER Bay",
+    "generation_metadata": {
+      "generator_version": "1.0.0",
+      "category": "Major Trauma",
+      "seed": 42,
+      "created_at": "2026-08-27T14:33:59.546357"
+    }
+  },
+  {
+    "case_id": "SYN-14216175",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 60,
+      "gender": "Male",
+      "blood_group": "B-"
+    },
+    "chief_complaint": "I cut my arm deep with a power tool and blood is pulsing out everywhere!",
+    "symptoms": [
+      "Severe Bleeding"
+    ],
+    "symptom_onset": "2 days ago",
+    "symptom_duration": "Ongoing",
+    "severity": "MODERATE",
+    "vital_signs": {
+      "heart_rate": 100,
+      "spo2": 94,
+      "bp_systolic": 133,
+      "bp_diastolic": 82,
+      "temp_c": 37.8
+    },
+    "medical_history": [
+      "Epilepsy"
+    ],
+    "medications": [
+      "Sodium Valproate 500mg"
+    ],
+    "emergency_red_flags": [
+      "Active Heavy Arterial Bleeding"
+    ],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA, your AI nurse assistant. How can I help you today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "I cut my arm deep with a power tool and blood is pulsing out everywhere!"
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you. On a scale of 0 to 10, how severe is your pain or discomfort right now?"
+      },
+      {
+        "turn": 4,
+        "speaker": "patient",
+        "text": "I'd rate it an 3 out of 10."
+      }
+    ],
+    "structured_clinical_info": {
+      "chestPain": false,
+      "breathingDifficulty": false,
+      "unconsciousness": false,
+      "painSeverity": "moderate",
+      "painScore": 4,
+      "suddenOnset": false,
+      "radiationLeftArm": true
+    },
+    "expected_triage_category": "MODERATE",
+    "expected_escalation_action": "Recommend Urgent Clinic Visit within 2 Hours",
+    "generation_metadata": {
+      "generator_version": "1.0.0",
+      "category": "Severe Bleeding",
+      "seed": 42,
+      "created_at": "2026-08-27T14:33:59.546372"
+    }
+  },
+  {
+    "case_id": "SYN-42614537",
+    "synthetic": true,
+    "patient_demographics": {
+      "age": 78,
+      "gender": "Female",
+      "blood_group": "B-"
+    },
+    "chief_complaint": "Fell off a 12 foot ladder onto concrete, severe hip and neck pain.",
+    "symptoms": [
+      "Burns"
+    ],
+    "symptom_onset": "2 days ago",
+    "symptom_duration": "Ongoing",
+    "severity": "LOW",
+    "vital_signs": {
+      "heart_rate": 71,
+      "spo2": 100,
+      "bp_systolic": 115,
+      "bp_diastolic": 76,
+      "temp_c": 36.7
+    },
+    "medical_history": [
+      "Asthma"
+    ],
+    "medications": [
+      "Salbutamol Inhaler"
+    ],
+    "emergency_red_flags": [
+      "High Mechanism Trauma",
+      "Full Thickness Burn"
+    ],
+    "conversation": [
+      {
+        "turn": 1,
+        "speaker": "mira",
+        "text": "Hello, I am MIRA, your AI nurse assistant. How can I help you today?"
+      },
+      {
+        "turn": 2,
+        "speaker": "patient",
+        "text": "Fell off a 12 foot ladder onto concrete, severe hip and neck pain."
+      },
+      {
+        "turn": 3,
+        "speaker": "mira",
+        "text": "Thank you. On a scale of 0 to 10, how severe is your pain or discomfort right now?"
+      },
+      {
+        "turn": 4,
+        "speaker": "patient",
+        "text": "I'd rate it an 3 out of 10."
+      }
+    ],
+    "structured_clinical_info": {
+      "chestPain": false,
+      "breathingDifficulty": false,
+      "unconsciousness": false,
+      "painSeverity": "mild",
+      "painScore": 2,
+      "suddenOnset": false,
+      "radiationLeftArm": false
+    },
+    "expected_triage_category": "LOW",
+    "expected_escalation_action": "Routine Tele-consultation & Home Monitoring Advice",
+    "generation_metadata": {
+      "generator_version": "1.0.0",
+      "category": "Burns",
+      "seed": 42,
+      "created_at": "2026-08-27T14:33:59.546387"
+    }
+  }
+]

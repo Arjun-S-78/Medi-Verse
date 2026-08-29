@@ -1,0 +1,103 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MIRA Synthetic Medical Record Schema",
+  "description": "Schema for AI-generated synthetic emergency medical scenarios used to train and evaluate MIRA AI Triage.",
+  "type": "object",
+  "required": [
+    "case_id",
+    "synthetic",
+    "patient_demographics",
+    "chief_complaint",
+    "symptoms",
+    "symptom_onset",
+    "symptom_duration",
+    "severity",
+    "vital_signs",
+    "medical_history",
+    "medications",
+    "emergency_red_flags",
+    "conversation",
+    "structured_clinical_info",
+    "expected_triage_category",
+    "expected_escalation_action",
+    "generation_metadata"
+  ],
+  "properties": {
+    "case_id": {
+      "type": "string",
+      "pattern": "^SYN-[A-Z0-9]{8,12}$"
+    },
+    "synthetic": {
+      "type": "boolean",
+      "const": true,
+      "description": "Must unconditionally be true for all generated synthetic scenarios."
+    },
+    "patient_demographics": {
+      "type": "object",
+      "required": ["age", "gender", "blood_group"],
+      "properties": {
+        "age": { "type": "integer", "minimum": 1, "maximum": 115 },
+        "gender": { "type": "string", "enum": ["Male", "Female", "Other"] },
+        "blood_group": { "type": "string", "enum": ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-", "Unknown"] }
+      }
+    },
+    "chief_complaint": { "type": "string", "minLength": 3 },
+    "symptoms": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "symptom_onset": { "type": "string" },
+    "symptom_duration": { "type": "string" },
+    "severity": {
+      "type": "string",
+      "enum": ["LOW", "MODERATE", "HIGH", "CRITICAL"]
+    },
+    "vital_signs": {
+      "type": "object",
+      "required": ["heart_rate", "spo2", "bp_systolic", "bp_diastolic", "temp_c"],
+      "properties": {
+        "heart_rate": { "type": ["integer", "null"], "minimum": 30, "maximum": 240 },
+        "spo2": { "type": ["integer", "null"], "minimum": 50, "maximum": 100 },
+        "bp_systolic": { "type": ["integer", "null"], "minimum": 50, "maximum": 260 },
+        "bp_diastolic": { "type": ["integer", "null"], "minimum": 30, "maximum": 160 },
+        "temp_c": { "type": ["number", "null"], "minimum": 34.0, "maximum": 43.0 }
+      }
+    },
+    "medical_history": { "type": "array", "items": { "type": "string" } },
+    "medications": { "type": "array", "items": { "type": "string" } },
+    "emergency_red_flags": { "type": "array", "items": { "type": "string" } },
+    "conversation": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["turn", "speaker", "text"],
+        "properties": {
+          "turn": { "type": "integer", "minimum": 1 },
+          "speaker": { "type": "string", "enum": ["patient", "mira"] },
+          "text": { "type": "string", "minLength": 1 }
+        }
+      },
+      "minItems": 2
+    },
+    "structured_clinical_info": {
+      "type": "object",
+      "description": "Structured target for symptom extraction. Unknowns MUST be null, not false."
+    },
+    "expected_triage_category": {
+      "type": "string",
+      "enum": ["LOW", "MODERATE", "HIGH", "CRITICAL"]
+    },
+    "expected_escalation_action": { "type": "string" },
+    "generation_metadata": {
+      "type": "object",
+      "required": ["generator_version", "category", "seed", "created_at"],
+      "properties": {
+        "generator_version": { "type": "string" },
+        "category": { "type": "string" },
+        "seed": { "type": ["integer", "null"] },
+        "created_at": { "type": "string" }
+      }
+    }
+  }
+}

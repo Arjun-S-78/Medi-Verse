@@ -1,0 +1,3 @@
+case_id,synthetic,severity,chief_complaint,expected_triage_category,expected_escalation_action
+SYN-21496211,True,LOW,I've had a slight dull ache near my ribs for two days when I stretch.,LOW,Routine Tele-consultation & Home Monitoring Advice
+SYN-81971316,True,CRITICAL,"Fell off a 12 foot ladder onto concrete, severe hip and neck pain.",CRITICAL,Dispatch Immediate ALS Emergency Ambulance & Alert Nearest Trauma Center

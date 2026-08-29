@@ -1,904 +1,779 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
+
 import '../../../../app/router/route_names.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../shared/models/severity_level.dart';
-import '../../../../shared/widgets/buttons/primary_button.dart';
+import '../../../../core/theme/app_tokens.dart';
+import '../../../../shared/widgets/widgets.dart';
+import '../../domain/models/mira_conversation_state.dart';
+import '../../domain/models/mira_message.dart';
+import '../../domain/models/mira_mode.dart';
+import '../../domain/models/mira_tts_state.dart';
+import '../../domain/models/priority_level.dart';
+import '../../domain/models/structured_triage_data.dart';
+import '../../domain/models/triage_result.dart';
+import '../providers/mira_conversation_provider.dart';
+import '../providers/mira_tts_provider.dart';
 
-/// Clinical AI Nurse Triage Screen (Hospital Triage Nurse Protocol)
-/// Feature-First Clean Architecture: Presentation Layer
-class AiNurseTriageScreen extends StatefulWidget {
+/// Interactive AI-Assisted Triage Nurse Screen (MIRA) with Voice Interaction System (TTS).
+class AiNurseTriageScreen extends ConsumerStatefulWidget {
   const AiNurseTriageScreen({super.key});
 
   @override
-  State<AiNurseTriageScreen> createState() => _AiNurseTriageScreenState();
+  ConsumerState<AiNurseTriageScreen> createState() => _AiNurseTriageScreenState();
 }
 
-class _AiNurseTriageScreenState extends State<AiNurseTriageScreen> {
-  // Triage Phase: 0 = Welcome, 1-4 = Questions, 5 = Processing, 6 = Result
-  int _currentPhase = 0;
-  int _currentQuestionIndex = 0;
+class _AiNurseTriageScreenState extends ConsumerState<AiNurseTriageScreen> {
+  final TextEditingController _textController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   bool _isListeningVoice = false;
-
-  // Question Form Data
-  int _selectedCategoryIndex = 0;
-  double _painLevel = 7.0;
-  final Set<String> _associatedSymptoms = {'Shortness of Breath', 'Sweating'};
-  int _breathingScoreIndex = 0;
-
-  final List<Map<String, dynamic>> _symptomCategories = [
-    {
-      'title': 'Chest & Cardiac',
-      'subtitle': 'Pressure, tightness, radiating pain',
-      'icon': Icons.favorite_outlined,
-      'color': AppColors.esi1Critical,
-    },
-    {
-      'title': 'Respiratory & Lungs',
-      'subtitle': 'Wheezing, gasping, shortness of breath',
-      'icon': Icons.air_rounded,
-      'color': AppColors.esi2Emergent,
-    },
-    {
-      'title': 'Neurological & Head',
-      'subtitle': 'Severe headache, numbness, confusion',
-      'icon': Icons.psychology_rounded,
-      'color': AppColors.secondary500,
-    },
-    {
-      'title': 'Abdominal & Visceral',
-      'subtitle': 'Acute pain, nausea, vomiting',
-      'icon': Icons.medical_services_outlined,
-      'color': AppColors.esi3Urgent,
-    },
-    {
-      'title': 'Trauma & Bleeding',
-      'subtitle': 'Laceration, fracture, severe bleed',
-      'icon': Icons.bloodtype_rounded,
-      'color': AppColors.esi1Critical,
-    },
-  ];
-
-  final List<String> _associatedSymptomOptions = [
-    'Shortness of Breath',
-    'Cold Sweating',
-    'Dizziness / Lightheaded',
-    'Arm or Jaw Pain',
-    'Nausea / Vomiting',
-    'Palpitations',
-    'Confusion',
-  ];
-
-  final List<String> _breathingOptions = [
-    'Breathing Normally (Full sentences)',
-    'Moderate Distress (Short sentences)',
-    'Severe Gasping (Single words only)',
-    'Unable to Speak (Critical Airway)',
-  ];
-
-  void _nextQuestion() {
-    if (_currentQuestionIndex < 3) {
-      setState(() => _currentQuestionIndex++);
-    } else {
-      _startRiskProcessing();
-    }
-  }
-
-  void _previousQuestion() {
-    if (_currentQuestionIndex > 0) {
-      setState(() => _currentQuestionIndex--);
-    } else {
-      setState(() => _currentPhase = 0);
-    }
-  }
-
-  void _startRiskProcessing() async {
-    setState(() => _currentPhase = 5); // Processing Phase
-    await Future.delayed(const Duration(milliseconds: 2600));
-    if (mounted) {
-      setState(() => _currentPhase = 6); // Result Phase
-    }
-  }
+  int? _selectedPainLevel;
 
   @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Scaffold(
-      backgroundColor: isDark ? AppColors.darkCanvas : AppColors.neutral100,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
-          onPressed: () {
-            if (_currentPhase > 0 && _currentPhase < 5) {
-              _previousQuestion();
-            } else {
-              context.go(RouteNames.home);
-            }
-          },
-        ),
-        title: Text(
-          _currentPhase == 0
-              ? 'MIRA AI Triage'
-              : (_currentPhase < 5
-                  ? 'Clinical Assessment'
-                  : (_currentPhase == 5 ? 'Processing Risk...' : 'Triage Result')),
-        ),
-        centerTitle: true,
-      ),
-      body: SafeArea(
-        child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 400),
-          child: _buildCurrentPhaseWidget(isDark),
-        ),
-      ),
-    );
+  void dispose() {
+    _textController.dispose();
+    _scrollController.dispose();
+    super.dispose();
   }
 
-  Widget _buildCurrentPhaseWidget(bool isDark) {
-    switch (_currentPhase) {
-      case 0:
-        return _buildTriageWelcomeView(isDark);
-      case 1:
-      case 2:
-      case 3:
-      case 4:
-        return _buildQuestionCardView(isDark);
-      case 5:
-        return _buildRiskProcessingView(isDark);
-      case 6:
-        return _buildTriageResultView(isDark);
-      default:
-        return _buildTriageWelcomeView(isDark);
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+  void _sendMessage({String? customText}) {
+    final text = customText ?? _textController.text.trim();
+    if (text.isEmpty) return;
+
+    ref.read(miraConversationProvider.notifier).sendPatientMessage(text);
+    if (customText == null) _textController.clear();
+    _scrollToBottom();
+  }
+
+  void _toggleVoiceListening() {
+    setState(() => _isListeningVoice = !_isListeningVoice);
+    if (_isListeningVoice) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('MIRA Voice Speech Recognition active... Speak your symptoms clearly.'),
+          duration: Duration(seconds: 2),
+          backgroundColor: AppColors.primary500,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
     }
   }
 
-  // ==========================================
-  // PHASE 0: TRIAGE WELCOME SCREEN
-  // ==========================================
-  Widget _buildTriageWelcomeView(bool isDark) {
-    return SingleChildScrollView(
-      key: const ValueKey('WelcomeView'),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 460),
-          child: Column(
-            children: [
-              const SizedBox(height: 12),
+  void _showTtsSettingsSheet() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        return Consumer(
+          builder: (context, ref, child) {
+            final ttsState = ref.watch(miraTtsProvider);
+            final ttsNotifier = ref.read(miraTtsProvider.notifier);
 
-              // Nurse Sarah Avatar Badge
-              Stack(
-                alignment: Alignment.center,
+            return Container(
+              padding: const EdgeInsets.all(AppTokens.spaceLg),
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.darkSurfaceCard : Colors.white,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(AppTokens.radius2Xl)),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    width: 110,
-                    height: 110,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.primary500.withValues(alpha: 0.12),
-                    ),
-                  ),
-                  Container(
-                    width: 90,
-                    height: 90,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        colors: [AppColors.primary500, AppColors.primary600],
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'MIRA Voice Settings',
+                        style: GoogleFonts.poppins(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white : AppColors.neutral900,
+                        ),
                       ),
-                    ),
-                    child: const Icon(
-                      Icons.medical_services_rounded,
-                      color: Colors.white,
-                      size: 44,
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 4,
-                    right: 4,
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColors.esi4LessUrgent,
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.pop(context),
                       ),
-                      child: const Icon(Icons.check, color: Colors.white, size: 14),
-                    ),
+                    ],
                   ),
+                  const SizedBox(height: AppTokens.spaceSm),
+                  SwitchListTile(
+                    title: const Text('Enable MIRA Voice (Text-to-Speech)'),
+                    subtitle: const Text('Female nurse voice assistance'),
+                    value: ttsState.settings.isEnabled,
+                    onChanged: (_) => ttsNotifier.toggleMute(),
+                  ),
+                  SwitchListTile(
+                    title: const Text('Auto-play Voice Responses'),
+                    subtitle: const Text('Automatically speak new MIRA questions'),
+                    value: ttsState.settings.autoPlay,
+                    onChanged: ttsState.settings.isEnabled ? (_) => ttsNotifier.toggleAutoPlay() : null,
+                  ),
+                  const SizedBox(height: AppTokens.spaceSm),
+                  Text(
+                    'Speaking Speed: ${ttsState.settings.speechRate.toStringAsFixed(2)}x',
+                    style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                  ),
+                  Slider(
+                    value: ttsState.settings.speechRate,
+                    min: 0.3,
+                    max: 0.8,
+                    divisions: 10,
+                    activeColor: AppColors.primary500,
+                    onChanged: ttsState.settings.isEnabled
+                        ? (val) {
+                            ttsNotifier.updateSettings(ttsState.settings.copyWith(speechRate: val));
+                          }
+                        : null,
+                  ),
+                  if (ttsState.activeVoiceName != null) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      'Active Engine Voice: ${ttsState.activeVoiceName} (${ttsState.activeLanguage ?? "en-US"})',
+                      style: TextStyle(fontSize: 12, color: isDark ? AppColors.neutral400 : AppColors.neutral600),
+                    ),
+                  ],
+                  const SizedBox(height: AppTokens.spaceMd),
                 ],
-              )
-                  .animate()
-                  .fadeIn(duration: 500.ms)
-                  .scale(begin: const Offset(0.8, 0.8), end: const Offset(1.0, 1.0), duration: 500.ms),
-
-              const SizedBox(height: 20),
-
-              const Text(
-                'MIRA (AI Clinical Specialist)',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w800,
-                ),
               ),
-
-              const SizedBox(height: 4),
-
-              const Text(
-                'Certified Emergency Triage Specialist',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.primary500,
-                ),
-              ),
-
-              const SizedBox(height: 24),
-
-              // Overview Banner
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: isDark ? AppColors.darkSurfaceCard : Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: isDark ? AppColors.darkBorder : AppColors.neutral200,
-                  ),
-                ),
-                child: const Column(
-                  children: [
-                    Text(
-                      'Welcome to AI Emergency Triage',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'I will guide you through 4 clinical questions to evaluate your emergency risk against the Manchester Triage Index (ESI 1-5) and match you with an ER & ambulance.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 13, color: AppColors.neutral600, height: 1.4),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              // Live Vitals Preview Badge
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: AppColors.secondary100.withValues(alpha: isDark ? 0.1 : 0.6),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: AppColors.secondary500.withValues(alpha: 0.3),
-                  ),
-                ),
-                child: const Row(
-                  children: [
-                    Icon(Icons.monitor_heart_outlined, color: AppColors.secondary500, size: 26),
-                    SizedBox(width: 14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Connected Vitals Sync',
-                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.secondary500),
-                          ),
-                          Text(
-                            'Heart Rate: 88 BPM • SpO2: 97%',
-                            style: TextStyle(fontSize: 12, color: AppColors.neutral700),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 32),
-
-              PrimaryButton(
-                text: 'Begin Triage Assessment',
-                icon: Icons.play_arrow_rounded,
-                onPressed: () {
-                  setState(() {
-                    _currentPhase = 1;
-                    _currentQuestionIndex = 0;
-                  });
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
+            );
+          },
+        );
+      },
     );
   }
 
-  // ==========================================
-  // PHASE 1-4: QUESTION CARDS VIEW
-  // ==========================================
-  Widget _buildQuestionCardView(bool isDark) {
-    final double progress = (_currentQuestionIndex + 1) / 4.0;
-
-    return SingleChildScrollView(
-      key: ValueKey('QuestionView_$_currentQuestionIndex'),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 460),
+  void _showStructuredDataDrawer(StructuredTriageData data) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        return Container(
+          padding: const EdgeInsets.all(AppTokens.spaceLg),
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.darkSurfaceCard : Colors.white,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(AppTokens.radius2Xl)),
+          ),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Progress Indicator Row
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Step ${_currentQuestionIndex + 1} of 4',
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.primary500,
+                    'Extracted Clinical Triage Data',
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: isDark ? Colors.white : AppColors.neutral900,
                     ),
                   ),
-                  Text(
-                    '${(progress * 100).toInt()}% Completed',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.neutral600,
-                    ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(99),
-                child: LinearProgressIndicator(
-                  value: progress,
-                  minHeight: 6,
-                  backgroundColor: isDark ? AppColors.darkBorder : AppColors.neutral200,
-                  valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary500),
-                ),
-              ),
-
-              const SizedBox(height: 24),
-
-              // Voice Input Pulse Banner Button
-              GestureDetector(
-                onTap: () {
-                  setState(() => _isListeningVoice = !_isListeningVoice);
-                },
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: _isListeningVoice
-                        ? AppColors.secondary500
-                        : (isDark ? AppColors.darkSurfaceCard : Colors.white),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: AppColors.secondary500,
-                      width: 1.5,
-                    ),
-                    boxShadow: _isListeningVoice
-                        ? [
-                            BoxShadow(
-                              color: AppColors.secondary500.withValues(alpha: 0.4),
-                              blurRadius: 16,
-                              spreadRadius: 2,
-                            ),
-                          ]
-                        : [],
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        _isListeningVoice ? Icons.mic_rounded : Icons.mic_none_rounded,
-                        color: _isListeningVoice ? Colors.white : AppColors.secondary500,
-                        size: 22,
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          _isListeningVoice
-                              ? 'MIRA listening... Speak symptoms'
-                              : 'Tap to speak symptoms hands-free',
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: _isListeningVoice ? Colors.white : AppColors.secondary500,
-                          ),
-                        ),
-                      ),
-                      if (_isListeningVoice)
-                        const SizedBox(
-                          width: 14,
-                          height: 14,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 24),
-
-              // Question Card Dynamic Render
-              _buildQuestionCardContent(isDark),
-
-              const SizedBox(height: 32),
-
-              // Navigation Buttons Row (Previous & Next)
-              Row(
-                children: [
-                  if (_currentQuestionIndex > 0) ...[
-                    Expanded(
-                      flex: 1,
-                      child: OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(48),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                        ),
-                        onPressed: _previousQuestion,
-                        child: const Text('Previous'),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                  ],
-                  Expanded(
-                    flex: 2,
-                    child: PrimaryButton(
-                      text: _currentQuestionIndex == 3 ? 'Process Triage Risk' : 'Next Question',
-                      icon: Icons.arrow_forward_rounded,
-                      onPressed: _nextQuestion,
-                    ),
-                  ),
-                ],
-              ),
+              const SizedBox(height: AppTokens.spaceMd),
+              _buildDataRow('Chief Complaint', data.chiefComplaint ?? 'Not provided', isDark),
+              _buildDataRow('Onset Time', data.onset ?? 'Unknown', isDark),
+              _buildDataRow('Pain Level', data.painLevel != null ? '${data.painLevel}/10' : 'Unrated', isDark),
+              _buildDataRow('Breathing Difficulty', data.breathingDifficulty?.toString() ?? 'Unasked', isDark),
+              _buildDataRow('Chest Pain Indicator', data.chestPain?.toString() ?? 'Unasked', isDark),
+              _buildDataRow('Severe Bleeding', data.severeBleeding?.toString() ?? 'Unasked', isDark),
+              _buildDataRow('Major Trauma', data.majorTrauma?.toString() ?? 'Unasked', isDark),
+              _buildDataRow('Seizure Activity', data.seizure?.toString() ?? 'Unasked', isDark),
+              if (data.medicalConditions.isNotEmpty)
+                _buildDataRow('Medical History', data.medicalConditions.join(', '), isDark),
+              const SizedBox(height: AppTokens.spaceLg),
             ],
           ),
+        );
+      },
+    );
+  }
+
+  Widget _buildDataRow(String label, String value, bool isDark) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: TextStyle(color: isDark ? AppColors.neutral400 : AppColors.neutral600)),
+          Text(value, style: const TextStyle(fontWeight: FontWeight.w600)),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(miraConversationProvider);
+    final ttsState = ref.watch(miraTtsProvider);
+    final ttsNotifier = ref.read(miraTtsProvider.notifier);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Scaffold(
+      backgroundColor: AppColors.darkCanvas,
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF0F172A),
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(LucideIcons.arrowLeft, color: Colors.white),
+          onPressed: () => context.pop(),
+        ),
+        title: Row(
+          children: [
+            MiraAvatarWidget(
+              size: 38,
+              mode: MiraMode.triage,
+              isSpeaking: ttsState.isSpeaking,
+              isListening: _isListeningVoice,
+              showStatusBadge: false,
+            ),
+            const SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      'MIRA Triage',
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    if (ttsState.isSpeaking) ...[
+                      const SizedBox(width: 8),
+                      _buildAudioWaveformBadge(),
+                    ],
+                  ],
+                ),
+                Text(
+                  _isListeningVoice
+                      ? 'Listening to voice...'
+                      : (ttsState.isSpeaking ? 'Speaking...' : 'AI Emergency Nurse'),
+                  style: GoogleFonts.poppins(
+                    fontSize: 11,
+                    color: ttsState.isSpeaking
+                        ? AppColors.esi4LessUrgent
+                        : (isDark ? AppColors.neutral400 : AppColors.neutral600),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              ttsState.settings.isEnabled ? LucideIcons.volume2 : LucideIcons.volumeX,
+              color: ttsState.settings.isEnabled ? AppColors.primary500 : AppColors.neutral400,
+            ),
+            tooltip: ttsState.settings.isEnabled ? 'Mute Voice' : 'Unmute Voice',
+            onPressed: () => ttsNotifier.toggleMute(),
+          ),
+          IconButton(
+            icon: Icon(LucideIcons.settings, color: isDark ? AppColors.neutral400 : AppColors.neutral600),
+            tooltip: 'Voice Settings',
+            onPressed: _showTtsSettingsSheet,
+          ),
+          IconButton(
+            icon: Icon(LucideIcons.fileText, color: isDark ? AppColors.neutral400 : AppColors.neutral600),
+            tooltip: 'View Triage Summary',
+            onPressed: () => _showStructuredDataDrawer(state.structuredData),
+          ),
+          IconButton(
+            icon: Icon(LucideIcons.rotateCcw, color: isDark ? AppColors.neutral400 : AppColors.neutral600),
+            tooltip: 'Reset Conversation',
+            onPressed: () {
+              ref.read(miraConversationProvider.notifier).resetSession();
+              ref.read(miraTtsProvider.notifier).stop();
+            },
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Clinical Disclaimer Banner
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: AppTokens.spaceMd, vertical: 8),
+              color: AppColors.primary500.withValues(alpha: 0.08),
+              child: const Text(
+                'ℹ️ MIRA is an intelligent emergency triage coordinator — NOT a diagnostic tool.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: AppColors.primary500),
+              ),
+            ),
+
+            // Emergency Red Flag Alert Header
+            if (state.isEmergencyEscalation || (state.triageResult?.priority == PriorityLevel.critical))
+              Container(
+                margin: const EdgeInsets.all(AppTokens.spaceMd),
+                padding: const EdgeInsets.all(AppTokens.spaceMd),
+                decoration: BoxDecoration(
+                  color: AppColors.esi1Critical.withValues(alpha: 0.12),
+                  borderRadius: AppTokens.borderRadiusLg,
+                  border: Border.all(color: AppColors.esi1Critical, width: 2),
+                ),
+                child: Column(
+                  children: [
+                    const Row(
+                      children: [
+                        Icon(LucideIcons.alertTriangle, color: AppColors.esi1Critical, size: 24),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            'CRITICAL EMERGENCY RED FLAG DETECTED',
+                            style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.esi1Critical, fontSize: 13),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    EmergencyButton(
+                      isFullWidth: true,
+                      label: 'DISPATCH AMBULANCE NOW',
+                      onTap: () {
+                        ttsNotifier.stop();
+                        context.push(RouteNames.searchingAmbulance);
+                      },
+                    ),
+                  ],
+                ),
+              ).animate().fade(duration: 400.ms),
+
+            // Conversation Feed
+            Expanded(
+              child: ListView.builder(
+                controller: _scrollController,
+                padding: const EdgeInsets.all(AppTokens.spaceMd),
+                itemCount: state.messages.length,
+                itemBuilder: (context, index) {
+                  final message = state.messages[index];
+                  return _buildMessageBubble(message, ttsState, ttsNotifier, isDark);
+                },
+              ),
+            ),
+
+            // Interactive Pain Scale (0-10) Selector when pain assessment is active
+            if (!state.isCompleted) _buildInteractivePainScaleWidget(isDark),
+
+            // Triage Result View when assessment completes
+            if (state.isCompleted && state.triageResult != null)
+              _buildTriageResultCard(state.triageResult!, isDark),
+
+            // Bottom Input Control Bar
+            _buildInputBar(state, isDark),
+          ],
         ),
       ),
     );
   }
 
-  // Question Card Specific Content Renderer
-  Widget _buildQuestionCardContent(bool isDark) {
-    switch (_currentQuestionIndex) {
-      case 0:
-        // Question 1: Symptom Location Category
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Question 1',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.primary500),
-            ),
-            const SizedBox(height: 4),
-            const Text(
-              'Where is your primary symptom located?',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 16),
-            ...List.generate(_symptomCategories.length, (index) {
-              final item = _symptomCategories[index];
-              final isSelected = _selectedCategoryIndex == index;
-              return Container(
-                margin: const EdgeInsets.only(bottom: 10),
-                child: InkWell(
-                  onTap: () => setState(() => _selectedCategoryIndex = index),
-                  borderRadius: BorderRadius.circular(16),
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? (item['color'] as Color).withValues(alpha: 0.12)
-                          : (isDark ? AppColors.darkSurfaceCard : Colors.white),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: isSelected ? (item['color'] as Color) : (isDark ? AppColors.darkBorder : AppColors.neutral200),
-                        width: isSelected ? 2 : 1,
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(item['icon'] as IconData, color: item['color'] as Color, size: 28),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                item['title'] as String,
-                                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
-                              ),
-                              Text(
-                                item['subtitle'] as String,
-                                style: const TextStyle(fontSize: 12, color: AppColors.neutral600),
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (isSelected)
-                          Icon(Icons.check_circle_rounded, color: item['color'] as Color, size: 22),
-                      ],
-                    ),
+  // Audio Waveform Animated Badge for Voice UI
+  Widget _buildAudioWaveformBadge() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+      decoration: BoxDecoration(
+        color: AppColors.esi4LessUrgent,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ...List.generate(3, (i) {
+            return Container(
+              margin: const EdgeInsets.symmetric(horizontal: 1),
+              width: 2,
+              height: (i % 2 == 0 ? 8.0 : 12.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(1),
+              ),
+            );
+          }).animate(onPlay: (c) => c.repeat(reverse: true)).scaleY(begin: 0.4, end: 1.2),
+          const SizedBox(width: 4),
+          const Text('SPEAKING', style: TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.bold)),
+        ],
+      ),
+    );
+  }
+
+  // Interactive Pain Intensity Rating Scale (0 to 10 Chips)
+  Widget _buildInteractivePainScaleWidget(bool isDark) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: AppTokens.spaceMd, vertical: AppTokens.spaceSm),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.darkSurfaceCard : Colors.white,
+        border: Border(top: BorderSide(color: isDark ? AppColors.darkBorder : AppColors.neutral200)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Clinical Pain Scale Rating (0-10)',
+                style: GoogleFonts.poppins(
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? AppColors.neutral400 : AppColors.neutral600,
+                ),
+              ),
+              if (_selectedPainLevel != null)
+                Text(
+                  'Selected: $_selectedPainLevel/10 (${_getPainLabel(_selectedPainLevel!)})',
+                  style: GoogleFonts.poppins(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    color: _getPainColor(_selectedPainLevel!),
                   ),
                 ),
-              );
-            }),
-          ],
-        );
-
-      case 1:
-        // Question 2: Pain Intensity Rating (Visual 0-10 Scale)
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Question 2',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.primary500),
-            ),
-            const SizedBox(height: 4),
-            const Text(
-              'Rate your pain level right now (0 to 10):',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 24),
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: isDark ? AppColors.darkSurfaceCard : Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.neutral200),
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    '${_painLevel.toInt()} / 10',
-                    style: TextStyle(
-                      fontSize: 48,
-                      fontWeight: FontWeight.w900,
-                      color: _getPainColor(_painLevel),
+            ],
+          ),
+          const SizedBox(height: 6),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: List.generate(11, (index) {
+                final color = _getPainColor(index);
+                final isSelected = _selectedPainLevel == index;
+                return Padding(
+                  padding: const EdgeInsets.only(right: 6.0),
+                  child: InkWell(
+                    onTap: () {
+                      setState(() => _selectedPainLevel = index);
+                      _sendMessage(customText: 'My pain level is $index out of 10.');
+                    },
+                    borderRadius: BorderRadius.circular(10),
+                    child: AnimatedContainer(
+                      duration: AppTokens.durationFast,
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: isSelected ? color : color.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: isSelected ? color : color.withValues(alpha: 0.4),
+                          width: isSelected ? 2 : 1,
+                        ),
+                      ),
+                      child: Text(
+                        '$index',
+                        style: GoogleFonts.poppins(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: isSelected ? Colors.white : (isDark ? Colors.white : AppColors.neutral900),
+                        ),
+                      ),
                     ),
                   ),
-                  Text(
-                    _getPainDescription(_painLevel),
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: _getPainColor(_painLevel),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Slider(
-                    value: _painLevel,
-                    min: 0,
-                    max: 10,
-                    divisions: 10,
-                    activeColor: _getPainColor(_painLevel),
-                    onChanged: (val) => setState(() => _painLevel = val),
-                  ),
-                ],
-              ),
+                );
+              }),
             ),
-          ],
-        );
+          ),
+        ],
+      ),
+    );
+  }
 
-      case 2:
-        // Question 3: Associated High-Risk Symptoms
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Question 3',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.primary500),
-            ),
-            const SizedBox(height: 4),
-            const Text(
-              'Select any associated high-risk signs:',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 16),
-            Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              children: _associatedSymptomOptions.map((option) {
-                final isSelected = _associatedSymptoms.contains(option);
-                return FilterChip(
-                  label: Text(option),
-                  selected: isSelected,
-                  selectedColor: AppColors.primary500.withValues(alpha: 0.2),
-                  checkmarkColor: AppColors.primary500,
-                  labelStyle: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: isSelected
+  Color _getPainColor(int score) {
+    if (score <= 3) return AppColors.esi4LessUrgent;
+    if (score <= 6) return AppColors.esi3Urgent;
+    return AppColors.esi1Critical;
+  }
+
+  String _getPainLabel(int score) {
+    if (score == 0) return 'None';
+    if (score <= 3) return 'Mild';
+    if (score <= 6) return 'Moderate';
+    if (score <= 8) return 'Severe';
+    return 'Unbearable';
+  }
+
+  Widget _buildMessageBubble(
+    MiraMessage message,
+    MiraTtsState ttsState,
+    MiraTtsNotifier ttsNotifier,
+    bool isDark,
+  ) {
+    final isPatient = message.sender == MiraSender.patient;
+    final isSystem = message.sender == MiraSender.system;
+    final isThisMessageSpeaking = ttsState.isSpeaking && ttsState.currentMessageId == message.id;
+
+    if (isSystem) {
+      return Container(
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: AppColors.primary500.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Text(
+          message.text,
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 12, color: isDark ? AppColors.neutral400 : AppColors.neutral600),
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Column(
+        crossAxisAlignment: isPatient ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: isPatient ? MainAxisAlignment.end : MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (!isPatient) ...[
+                MiraAvatarWidget(
+                  size: 36,
+                  mode: message.requiresEmergencyAction ? MiraMode.emergency : MiraMode.triage,
+                  isSpeaking: isThisMessageSpeaking,
+                  showStatusBadge: false,
+                ),
+                const SizedBox(width: 8),
+              ],
+              Flexible(
+                child: Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: isPatient
                         ? AppColors.primary500
-                        : (isDark ? AppColors.neutral400 : AppColors.neutral700),
+                        : (message.requiresEmergencyAction
+                            ? AppColors.esi1Critical.withValues(alpha: 0.12)
+                            : (isDark ? AppColors.darkSurfaceCard : Colors.white)),
+                    borderRadius: BorderRadius.circular(18).copyWith(
+                      bottomRight: isPatient ? const Radius.circular(2) : const Radius.circular(18),
+                      bottomLeft: !isPatient ? const Radius.circular(2) : const Radius.circular(18),
+                    ),
+                    border: !isPatient
+                        ? Border.all(
+                            color: isThisMessageSpeaking
+                                ? AppColors.esi4LessUrgent
+                                : (message.requiresEmergencyAction
+                                    ? AppColors.esi1Critical
+                                    : (isDark ? AppColors.darkBorder : AppColors.neutral200)),
+                            width: isThisMessageSpeaking ? 2 : 1,
+                          )
+                        : null,
+                    boxShadow: AppTokens.shadowSm(isDark),
                   ),
-                  onSelected: (selected) {
-                    setState(() {
-                      if (selected) {
-                        _associatedSymptoms.add(option);
-                      } else {
-                        _associatedSymptoms.remove(option);
-                      }
-                    });
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        message.text,
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          height: 1.4,
+                          color: isPatient
+                              ? Colors.white
+                              : (isDark ? Colors.white : AppColors.neutral900),
+                        ),
+                      ),
+
+                      // Replay / Stop Voice Button
+                      if (!isPatient) ...[
+                        const SizedBox(height: 8),
+                        InkWell(
+                          onTap: () {
+                            if (isThisMessageSpeaking) {
+                              ttsNotifier.stop();
+                            } else {
+                              ttsNotifier.speakMessage(message);
+                            }
+                          },
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: isThisMessageSpeaking
+                                  ? AppColors.esi1Critical.withValues(alpha: 0.15)
+                                  : AppColors.primary500.withValues(alpha: 0.08),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  isThisMessageSpeaking ? LucideIcons.square : LucideIcons.volume2,
+                                  size: 12,
+                                  color: isThisMessageSpeaking ? AppColors.esi1Critical : AppColors.primary500,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  isThisMessageSpeaking ? 'Stop Voice' : 'Play Voice',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w600,
+                                    color: isThisMessageSpeaking ? AppColors.esi1Critical : AppColors.primary500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          // Quick Replies Chips
+          if (!isPatient && message.quickReplies != null && message.quickReplies!.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: message.quickReplies!.map((reply) {
+                return ActionChip(
+                  label: Text(reply, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
+                  backgroundColor: AppColors.primary500.withValues(alpha: 0.1),
+                  side: const BorderSide(color: AppColors.primary500),
+                  onPressed: () {
+                    ttsNotifier.stop();
+                    _sendMessage(customText: reply);
                   },
                 );
               }).toList(),
             ),
           ],
-        );
-
-      case 3:
-        // Question 4: Breathing & Airway Check
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Question 4',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.primary500),
-            ),
-            const SizedBox(height: 4),
-            const Text(
-              'How is your breathing right now?',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 16),
-            ...List.generate(_breathingOptions.length, (index) {
-              final isSelected = _breathingScoreIndex == index;
-              return Container(
-                margin: const EdgeInsets.only(bottom: 10),
-                child: InkWell(
-                  onTap: () => setState(() => _breathingScoreIndex = index),
-                  borderRadius: BorderRadius.circular(14),
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? AppColors.primary500.withValues(alpha: 0.12)
-                          : (isDark ? AppColors.darkSurfaceCard : Colors.white),
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(
-                        color: isSelected ? AppColors.primary500 : (isDark ? AppColors.darkBorder : AppColors.neutral200),
-                        width: isSelected ? 2 : 1,
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          isSelected ? Icons.radio_button_checked_rounded : Icons.radio_button_off_rounded,
-                          color: isSelected ? AppColors.primary500 : AppColors.neutral400,
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            _breathingOptions[index],
-                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            }),
-          ],
-        );
-
-      default:
-        return const SizedBox.shrink();
-    }
-  }
-
-  Color _getPainColor(double level) {
-    if (level < 4) return AppColors.esi4LessUrgent;
-    if (level < 7) return AppColors.esi3Urgent;
-    return AppColors.esi1Critical;
-  }
-
-  String _getPainDescription(double level) {
-    if (level == 0) return 'No Pain';
-    if (level < 4) return 'Mild Discomfort';
-    if (level < 7) return 'Moderate Distress';
-    if (level < 9) return 'Severe Acute Pain';
-    return 'Worst Imaginable Emergency Pain';
-  }
-
-  // ==========================================
-  // PHASE 5: RISK PROCESSING ANIMATION
-  // ==========================================
-  Widget _buildRiskProcessingView(bool isDark) {
-    return Center(
-      key: const ValueKey('ProcessingView'),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Radar Scan Pulse Visualizer
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                Container(
-                  width: 140,
-                  height: 140,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.primary500.withValues(alpha: 0.15),
-                  ),
-                )
-                    .animate(onPlay: (c) => c.repeat(reverse: true))
-                    .scale(begin: const Offset(1.0, 1.0), end: const Offset(1.3, 1.3), duration: 1000.ms),
-
-                Container(
-                  width: 100,
-                  height: 100,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.primary500,
-                  ),
-                  child: const Icon(Icons.analytics_outlined, color: Colors.white, size: 48),
-                ),
-              ],
-            ),
-            const SizedBox(height: 32),
-            const Text(
-              'Calculating Clinical Emergency Risk...',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              'Evaluating Manchester Triage Index (ESI 1-5) & matching nearby ER trauma beds.',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 13, color: AppColors.neutral600),
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }
 
-  // ==========================================
-  // PHASE 6: TRIAGE RESULT VIEW
-  // ==========================================
-  Widget _buildTriageResultView(bool isDark) {
-    final EsiSeverityLevel level = EsiSeverityLevel.esi1;
-
-    return SingleChildScrollView(
-      key: const ValueKey('ResultView'),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 460),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+  // Triage Result Summary Screen Card
+  Widget _buildTriageResultCard(TriageResult result, bool isDark) {
+    return Container(
+      margin: const EdgeInsets.all(AppTokens.spaceMd),
+      padding: const EdgeInsets.all(AppTokens.spaceLg),
+      decoration: BoxDecoration(
+        color: result.priority.surfaceColorLight.withValues(alpha: isDark ? 0.25 : 0.95),
+        borderRadius: AppTokens.borderRadius2Xl,
+        border: Border.all(color: result.priority.color, width: 2),
+        boxShadow: AppTokens.shadowMd(isDark),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // ESI 1 Emergency Banner
               Container(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                 decoration: BoxDecoration(
-                  color: level.surfaceLight,
+                  color: result.priority.color,
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: level.color, width: 2),
                 ),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: level.color,
-                          ),
-                          child: const Icon(Icons.warning_amber_rounded, color: Colors.white, size: 28),
-                        ),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'ESI LEVEL ${level.level}: ${level.name.toUpperCase()}',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w900,
-                                  color: level.color,
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-                              const Text(
-                                'Immediate Life Threat - Cardiac Protocol Required',
-                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.neutral900),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 14),
-                    Text(
-                      level.description,
-                      style: const TextStyle(fontSize: 12, color: AppColors.neutral700, height: 1.3),
-                    ),
-                  ],
-                ),
-              )
-                  .animate()
-                  .fadeIn(duration: 500.ms)
-                  .scale(begin: const Offset(0.9, 0.9), end: const Offset(1.0, 1.0), duration: 500.ms),
-
-              const SizedBox(height: 20),
-
-              // Matched Destination Hospital Card
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: isDark ? AppColors.darkSurfaceCard : Colors.white,
-                  borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.neutral200),
-                ),
-                child: const Row(
-                  children: [
-                    Icon(Icons.local_hospital_outlined, color: AppColors.primary500, size: 28),
-                    SizedBox(width: 14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'City General Hospital ER',
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
-                          ),
-                          Text(
-                            'Trauma Center Level 1 • 1.2 km away',
-                            style: TextStyle(fontSize: 12, color: AppColors.neutral600),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Text(
-                      '4 ICU Beds',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.esi4LessUrgent),
-                    ),
-                  ],
+                child: Text(
+                  result.priority.label.toUpperCase(),
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
                 ),
               ),
-
-              const SizedBox(height: 24),
-
-              // Dispatch Primary CTA
-              PrimaryButton(
-                text: 'DISPATCH AMBULANCE & LOCK ER BED',
-                backgroundColor: AppColors.esi1Critical,
-                textColor: Colors.white,
-                icon: Icons.airport_shuttle_outlined,
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Dispatching ALS Unit #402 & Reserving ICU Bed...'),
-                      backgroundColor: AppColors.esi1Critical,
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
-                  context.go(RouteNames.home);
-                },
+              Text(
+                'Clinical Priority Level',
+                style: TextStyle(fontWeight: FontWeight.bold, color: isDark ? Colors.white70 : Colors.black87),
               ),
             ],
           ),
-        ),
+          const SizedBox(height: AppTokens.spaceMd),
+          Text(
+            result.recommendedAction,
+            style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: AppTokens.spaceSm),
+          Text(
+            'Contributing Risk Factors:',
+            style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w600, color: isDark ? Colors.white70 : Colors.black54),
+          ),
+          const SizedBox(height: 4),
+          ...result.reasons.map((r) => Padding(
+                padding: const EdgeInsets.only(bottom: 2.0),
+                child: Text('• $r', style: GoogleFonts.poppins(fontSize: 12)),
+              )),
+          const SizedBox(height: AppTokens.spaceMd),
+          EmergencyButton(
+            isFullWidth: true,
+            label: 'REQUEST EMERGENCY AMBULANCE',
+            onTap: () {
+              ref.read(miraTtsProvider.notifier).stop();
+              context.push(RouteNames.searchingAmbulance);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInputBar(MiraConversationState state, bool isDark) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: AppTokens.spaceMd, vertical: 12),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.darkSurfaceCard : Colors.white,
+        boxShadow: AppTokens.shadowSm(isDark),
+      ),
+      child: Row(
+        children: [
+          IconButton(
+            icon: Icon(
+              _isListeningVoice ? LucideIcons.micOff : LucideIcons.mic,
+              color: _isListeningVoice ? AppColors.esi1Critical : AppColors.primary500,
+            ),
+            onPressed: _toggleVoiceListening,
+          ),
+          Expanded(
+            child: TextField(
+              controller: _textController,
+              decoration: InputDecoration(
+                hintText: _isListeningVoice ? 'MIRA Listening...' : 'Describe symptoms or answer MIRA...',
+                hintStyle: TextStyle(fontSize: 13, color: isDark ? AppColors.neutral400 : AppColors.neutral600),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(24),
+                  borderSide: BorderSide.none,
+                ),
+                filled: true,
+                fillColor: isDark ? AppColors.darkCanvas : AppColors.neutral100,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              ),
+              onSubmitted: (_) => _sendMessage(),
+            ),
+          ),
+          const SizedBox(width: 8),
+          IconButton(
+            icon: const Icon(LucideIcons.send, color: AppColors.primary500),
+            onPressed: () => _sendMessage(),
+          ),
+        ],
       ),
     );
   }

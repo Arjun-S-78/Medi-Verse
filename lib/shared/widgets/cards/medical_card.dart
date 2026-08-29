@@ -45,8 +45,8 @@ class MedicalCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final defaultBg = isDark ? AppColors.darkSurfaceCard : Colors.white;
-    final defaultBorder = isDark ? AppColors.darkBorder : AppColors.neutral200;
+    final defaultBg = AppColors.darkSurfaceCard;
+    final defaultBorder = AppColors.darkBorder;
 
     final bg = backgroundColor ?? defaultBg;
     final border = borderColor ?? defaultBorder;

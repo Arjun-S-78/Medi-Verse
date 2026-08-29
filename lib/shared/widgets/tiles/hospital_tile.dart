@@ -23,15 +23,13 @@ class HospitalTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurfaceCard : Colors.white,
+        color: AppColors.darkSurfaceCard,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDark ? AppColors.darkBorder : AppColors.neutral200,
+          color: AppColors.darkBorder,
         ),
       ),
       child: ListTile(
@@ -47,11 +45,11 @@ class HospitalTile extends StatelessWidget {
         ),
         title: Text(
           name,
-          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white),
         ),
         subtitle: Text(
           '$traumaLevel • $distance',
-          style: const TextStyle(fontSize: 12, color: AppColors.neutral600),
+          style: const TextStyle(fontSize: 12, color: AppColors.neutral400),
         ),
         trailing: StatusBadge(
           label: icuBeds,

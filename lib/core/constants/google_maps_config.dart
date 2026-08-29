@@ -2,12 +2,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 /// Centralized Configuration and Utilities for Google Maps Platform Integration
 class GoogleMapsConfig {
-  /// Default Google Maps API Key or Demo Key configuration.
-  /// For production, pass the key via environment variable:
-  /// --dart-define=GOOGLE_MAPS_API_KEY=AIzaSy...
+  /// Default Google Maps API Key configuration.
+  /// Pass the key via environment variable:
+  /// --dart-define=GOOGLE_MAPS_API_KEY=YOUR_GOOGLE_MAPS_API_KEY
   static const String apiKey = String.fromEnvironment(
     'GOOGLE_MAPS_API_KEY',
-    defaultValue: 'AIzaSyDGAgFJPu2uAoNa6RSQ5VbWhseZyppxfYw',
+    defaultValue: 'YOUR_GOOGLE_MAPS_API_KEY',
   );
 
   /// Supported Tamil Nadu Cities

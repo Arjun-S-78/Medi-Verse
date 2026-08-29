@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../../app/router/route_names.dart';
 import '../../../../core/constants/google_maps_config.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../shared/widgets/buttons/primary_button.dart';
+import '../../../../core/theme/app_tokens.dart';
+import '../../../../shared/widgets/widgets.dart';
 
 /// Complete Emergency Dispatch & Live GPS Tracking Flow
 /// Feature-First Clean Architecture: Presentation Layer
@@ -48,11 +50,16 @@ class _EmergencyDispatchTrackingScreenState extends State<EmergencyDispatchTrack
     return Scaffold(
       backgroundColor: isDark ? AppColors.darkCanvas : AppColors.neutral100,
       appBar: AppBar(
+        backgroundColor: isDark ? AppColors.darkSurfaceCard : Colors.white,
+        elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
           onPressed: () => context.go(RouteNames.home),
         ),
-        title: Text(_getStepTitle()),
+        title: Text(
+          _getStepTitle(),
+          style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
         centerTitle: true,
         actions: [
           IconButton(
@@ -71,7 +78,7 @@ class _EmergencyDispatchTrackingScreenState extends State<EmergencyDispatchTrack
       ),
       body: SafeArea(
         child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 400),
+          duration: AppTokens.durationNormal,
           child: _buildCurrentDispatchStepWidget(isDark),
         ),
       ),
@@ -104,38 +111,37 @@ class _EmergencyDispatchTrackingScreenState extends State<EmergencyDispatchTrack
     }
   }
 
-  // ==========================================
   // STEP 1: EMERGENCY CONFIRMATION VIEW
-  // ==========================================
   Widget _buildConfirmationStepView(bool isDark) {
     return SingleChildScrollView(
       key: const ValueKey('ConfirmView'),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: AppTokens.spaceLg, vertical: AppTokens.spaceMd),
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 460),
+          constraints: const BoxConstraints(maxWidth: 500),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Emergency Header Alert Banner
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(AppTokens.spaceMd),
                 decoration: BoxDecoration(
                   color: AppColors.esi1SurfaceLight,
-                  borderRadius: BorderRadius.circular(18),
+                  borderRadius: AppTokens.borderRadiusLg,
                   border: Border.all(color: AppColors.esi1Critical, width: 1.5),
+                  boxShadow: AppTokens.shadowEmergency(isDark),
                 ),
-                child: const Row(
+                child: Row(
                   children: [
-                    Icon(Icons.warning_amber_rounded, color: AppColors.esi1Critical, size: 28),
-                    SizedBox(width: 12),
+                    const Icon(Icons.warning_amber_rounded, color: AppColors.esi1Critical, size: 28),
+                    const SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             'ESI Level 1 Emergency Confirmed',
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                               fontSize: 14,
                               fontWeight: FontWeight.w800,
                               color: AppColors.esi1Critical,
@@ -143,30 +149,27 @@ class _EmergencyDispatchTrackingScreenState extends State<EmergencyDispatchTrack
                           ),
                           Text(
                             'ALS Ambulance & ER Trauma Bay Lock Requested',
-                            style: TextStyle(fontSize: 12, color: AppColors.neutral700),
+                            style: GoogleFonts.poppins(fontSize: 12, color: AppColors.neutral700),
                           ),
                         ],
                       ),
                     ),
                   ],
                 ),
-              )
-                  .animate()
-                  .fadeIn(duration: 400.ms)
-                  .slideY(begin: -0.1, end: 0, duration: 400.ms),
+              ).animate().fadeIn(duration: 400.ms).slideY(begin: -0.1, end: 0, duration: 400.ms),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: AppTokens.spaceMd),
 
-              // Pickup Location Map Preview Card (Google Maps Placeholder)
+              // Pickup Location Map Preview Card
               _buildGoogleMapsPlaceholder(
-                height: 150,
+                height: 160,
                 isDark: isDark,
                 overlayWidget: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
                     color: isDark ? AppColors.darkSurfaceCard : Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 8)],
+                    borderRadius: AppTokens.borderRadiusMd,
+                    boxShadow: AppTokens.shadowSm(isDark),
                   ),
                   child: const Row(
                     mainAxisSize: MainAxisSize.min,
@@ -182,46 +185,47 @@ class _EmergencyDispatchTrackingScreenState extends State<EmergencyDispatchTrack
                 ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: AppTokens.spaceMd),
 
               // Destination ER Hospital Details Card
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(AppTokens.spaceMd),
                 decoration: BoxDecoration(
                   color: isDark ? AppColors.darkSurfaceCard : Colors.white,
-                  borderRadius: BorderRadius.circular(18),
+                  borderRadius: AppTokens.borderRadiusLg,
                   border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.neutral200),
+                  boxShadow: AppTokens.shadowSm(isDark),
                 ),
-                child: const Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Destination Hospital',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.primary500),
+                      style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.primary500),
                     ),
-                    SizedBox(height: 6),
+                    const SizedBox(height: 6),
                     Row(
                       children: [
-                        Icon(Icons.local_hospital_outlined, color: AppColors.esi1Critical, size: 26),
-                        SizedBox(width: 12),
+                        const Icon(Icons.local_hospital_outlined, color: AppColors.esi1Critical, size: 26),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 'City General Hospital ER',
-                                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                                style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.w700),
                               ),
                               Text(
                                 'Trauma Bay 2 • Attending: Dr. Sarah Vance',
-                                style: TextStyle(fontSize: 12, color: AppColors.neutral600),
+                                style: GoogleFonts.poppins(fontSize: 12, color: AppColors.neutral600),
                               ),
                             ],
                           ),
                         ),
                         Text(
                           '1.2 km',
-                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppColors.esi4LessUrgent),
+                          style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.bold, color: AppColors.esi4LessUrgent),
                         ),
                       ],
                     ),
@@ -229,14 +233,14 @@ class _EmergencyDispatchTrackingScreenState extends State<EmergencyDispatchTrack
                 ),
               ),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: AppTokens.spaceMd),
 
               // Toggles: Family ICE Notification & Passport Sharing
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: AppTokens.spaceMd, vertical: 8),
                 decoration: BoxDecoration(
                   color: isDark ? AppColors.darkSurfaceCard : Colors.white,
-                  borderRadius: BorderRadius.circular(18),
+                  borderRadius: AppTokens.borderRadiusLg,
                   border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.neutral200),
                 ),
                 child: Column(
@@ -245,8 +249,8 @@ class _EmergencyDispatchTrackingScreenState extends State<EmergencyDispatchTrack
                       value: _notifyIceContacts,
                       activeThumbColor: AppColors.primary500,
                       contentPadding: EdgeInsets.zero,
-                      title: const Text('Notify ICE Contacts (Spouse & Parent)', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-                      subtitle: const Text('Send SMS alert with live GPS tracking link', style: TextStyle(fontSize: 11, color: AppColors.neutral600)),
+                      title: Text('Notify ICE Contacts (Spouse & Parent)', style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w600)),
+                      subtitle: Text('Send SMS alert with live GPS tracking link', style: GoogleFonts.poppins(fontSize: 11, color: AppColors.neutral600)),
                       onChanged: (val) => setState(() => _notifyIceContacts = val),
                     ),
                     Divider(height: 1, color: isDark ? AppColors.darkBorder : AppColors.neutral200),
@@ -254,23 +258,21 @@ class _EmergencyDispatchTrackingScreenState extends State<EmergencyDispatchTrack
                       value: _shareMedicalPassport,
                       activeThumbColor: AppColors.primary500,
                       contentPadding: EdgeInsets.zero,
-                      title: const Text('Transmit Emergency Health Passport', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-                      subtitle: const Text('Shares blood group & allergies with paramedic tablet', style: TextStyle(fontSize: 11, color: AppColors.neutral600)),
+                      title: Text('Transmit Emergency Health Passport', style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w600)),
+                      subtitle: Text('Shares blood group & allergies with paramedic tablet', style: GoogleFonts.poppins(fontSize: 11, color: AppColors.neutral600)),
                       onChanged: (val) => setState(() => _shareMedicalPassport = val),
                     ),
                   ],
                 ),
               ),
 
-              const SizedBox(height: 28),
+              const SizedBox(height: AppTokens.spaceXl),
 
               // Dispatch Primary Action Button
-              PrimaryButton(
-                text: 'CONFIRM & DISPATCH AMBULANCE NOW',
-                backgroundColor: AppColors.esi1Critical,
-                textColor: Colors.white,
-                icon: Icons.airport_shuttle_rounded,
-                onPressed: _startSearchingAmbulance,
+              EmergencyButton(
+                isFullWidth: true,
+                label: 'CONFIRM & DISPATCH AMBULANCE NOW',
+                onTap: _startSearchingAmbulance,
               ),
             ],
           ),
@@ -279,14 +281,12 @@ class _EmergencyDispatchTrackingScreenState extends State<EmergencyDispatchTrack
     );
   }
 
-  // ==========================================
   // STEP 2: SEARCHING AMBULANCE RADAR VIEW
-  // ==========================================
   Widget _buildSearchingAmbulanceStepView(bool isDark) {
     return Center(
       key: const ValueKey('SearchingView'),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        padding: const EdgeInsets.symmetric(horizontal: AppTokens.spaceLg),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -316,19 +316,19 @@ class _EmergencyDispatchTrackingScreenState extends State<EmergencyDispatchTrack
                 ),
               ],
             ),
-            const SizedBox(height: 32),
-            const Text(
+            const SizedBox(height: AppTokens.spaceXl),
+            Text(
               'Pinging Nearby ALS Ambulances...',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+              style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.w800),
             ),
             const SizedBox(height: 10),
-            const Text(
+            Text(
               'Contacting 3 nearby Advanced Life Support units within 2 km radius.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 13, color: AppColors.neutral600),
+              style: GoogleFonts.poppins(fontSize: 13, color: AppColors.neutral600),
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: AppTokens.spaceXl),
             SizedBox(
               width: 180,
               child: ClipRRect(
@@ -346,250 +346,119 @@ class _EmergencyDispatchTrackingScreenState extends State<EmergencyDispatchTrack
     );
   }
 
-  // ==========================================
   // STEP 3 & 4: AMBULANCE ASSIGNED & LIVE TRACKING
-  // ==========================================
   Widget _buildLiveTrackingAndAssignedView(bool isDark) {
-    return Column(
-      key: const ValueKey('LiveTrackingView'),
-      children: [
-        // Top Main Area: Interactive Google Maps Placeholder with Live Ambulance Marker
-        Expanded(
-          flex: 5,
-          child: Stack(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isWide = constraints.maxWidth > 800;
+
+        if (isWide) {
+          // Desktop / Wide Screen Split View: Map on Left, Information Sheet on Right
+          return Row(
+            key: const ValueKey('LiveTrackingViewWide'),
             children: [
-              _buildGoogleMapsPlaceholder(
-                height: double.infinity,
-                isDark: isDark,
-                showLiveVehicleMarker: true,
-                overlayWidget: Positioned(
-                  top: 16,
-                  left: 16,
-                  right: 16,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    decoration: BoxDecoration(
-                      color: isDark ? AppColors.darkSurfaceCard : Colors.white,
-                      borderRadius: BorderRadius.circular(18),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.2),
-                          blurRadius: 16,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: AppColors.esi1Critical,
-                              ),
-                              child: const Icon(Icons.timer_outlined, color: Colors.white, size: 20),
-                            ),
-                            const SizedBox(width: 12),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'ETA: $_etaMinutes Minutes',
-                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.esi1Critical),
-                                ),
-                                const Text(
-                                  'Distance: 1.2 km • Traffic Light',
-                                  style: TextStyle(fontSize: 11, color: AppColors.neutral600),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: AppColors.esi4LessUrgent.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Text(
-                            'En Route',
-                            style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.esi4LessUrgent),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+              Expanded(
+                flex: 6,
+                child: _buildMapSection(isDark),
+              ),
+              Expanded(
+                flex: 5,
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(AppTokens.spaceLg),
+                  child: _buildTrackingDetailsSheet(isDark),
                 ),
               ),
             ],
-          ),
-        ),
+          );
+        }
 
-        // Bottom Expandable Sheet: Driver Details, Hospital Info, & Status Timeline
-        Expanded(
-          flex: 6,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            decoration: BoxDecoration(
-              color: isDark ? AppColors.darkCanvas : Colors.white,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.15),
-                  blurRadius: 20,
-                  offset: const Offset(0, -4),
-                ),
-              ],
+        // Mobile Stacked Layout
+        return Column(
+          key: const ValueKey('LiveTrackingViewMobile'),
+          children: [
+            Expanded(
+              flex: 5,
+              child: _buildMapSection(isDark),
             ),
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            Expanded(
+              flex: 6,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: AppTokens.spaceLg, vertical: AppTokens.spaceMd),
+                decoration: BoxDecoration(
+                  color: isDark ? AppColors.darkCanvas : Colors.white,
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(AppTokens.radius2Xl)),
+                  boxShadow: AppTokens.shadowLg(isDark),
+                ),
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: _buildTrackingDetailsSheet(isDark),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildMapSection(bool isDark) {
+    return Stack(
+      children: [
+        _buildGoogleMapsPlaceholder(
+          height: double.infinity,
+          isDark: isDark,
+          showLiveVehicleMarker: true,
+          overlayWidget: Positioned(
+            top: 16,
+            left: 16,
+            right: 16,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: AppTokens.spaceMd, vertical: 12),
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.darkSurfaceCard : Colors.white,
+                borderRadius: AppTokens.borderRadiusLg,
+                boxShadow: AppTokens.shadowMd(isDark),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Drag Handle Indicator
-                  Center(
-                    child: Container(
-                      width: 40,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: isDark ? AppColors.darkBorder : AppColors.neutral200,
-                        borderRadius: BorderRadius.circular(99),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.esi1Critical,
+                        ),
+                        child: const Icon(Icons.timer_outlined, color: Colors.white, size: 20),
                       ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // Assigned Driver & Paramedic Card
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: isDark ? AppColors.darkSurfaceCard : AppColors.neutral100,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.neutral200),
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 26,
-                              backgroundColor: AppColors.primary500.withValues(alpha: 0.2),
-                              child: const Icon(Icons.person_rounded, color: AppColors.primary500, size: 30),
-                            ),
-                            const SizedBox(width: 14),
-                            const Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Driver: K. Karthik',
-                                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
-                                  ),
-                                  SizedBox(height: 2),
-                                  Text(
-                                    'Paramedic: S. Ramanan, EMT-P',
-                                    style: TextStyle(fontSize: 12, color: AppColors.neutral600),
-                                  ),
-                                  SizedBox(height: 4),
-                                  Row(
-                                    children: [
-                                      Icon(Icons.star_rounded, color: Colors.amber, size: 16),
-                                      SizedBox(width: 4),
-                                      Text(
-                                        '4.9 (520 Dispatches)',
-                                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            // Quick Action Buttons: Call & Message
-                            IconButton.filledTonal(
-                              icon: const Icon(Icons.phone_rounded, color: AppColors.esi4LessUrgent),
-                              onPressed: () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Calling 108 Paramedic S. Ramanan directly...')),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        Divider(height: 1, color: isDark ? AppColors.darkBorder : AppColors.neutral200),
-                        const SizedBox(height: 10),
-                        const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Vehicle: 108 TN ALS Unit',
-                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                            ),
-                            Text(
-                              'Plate: TN-37-AM-1080',
-                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.primary500),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Destination Hospital Summary
-                  Container(
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      color: isDark ? AppColors.darkSurfaceCard : AppColors.neutral100,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.neutral200),
-                    ),
-                    child: const Row(
-                      children: [
-                        Icon(Icons.local_hospital_outlined, color: AppColors.esi1Critical, size: 24),
-                        SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'PSG Hospitals ER (Trauma Bay 2 Reserved)',
-                                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
-                              ),
-                              Text(
-                                'Attending: Dr. S. Rajendran • ICU Bed Reserved',
-                                style: TextStyle(fontSize: 11, color: AppColors.neutral600),
-                              ),
-                            ],
+                      const SizedBox(width: 12),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'ETA: $_etaMinutes Minutes',
+                            style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.esi1Critical),
                           ),
-                        ),
-                      ],
+                          const Text(
+                            'Distance: 1.2 km • Traffic Light',
+                            style: TextStyle(fontSize: 11, color: AppColors.neutral600),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AppColors.esi4LessUrgent.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Text(
+                      'En Route',
+                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.esi4LessUrgent),
                     ),
                   ),
-
-                  const SizedBox(height: 20),
-
-                  // Emergency Status Timeline Progress Stepper
-                  Text(
-                    'Emergency Status Timeline',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                      color: isDark ? Colors.white : AppColors.neutral900,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  _buildTimelineStep('1. Emergency Requested', 'SOS verified & ESI 1 priority assigned', true, isDark),
-                  _buildTimelineStep('2. 108 Ambulance Assigned', 'TN-37-AM-1080 accepted dispatch', true, isDark),
-                  _buildTimelineStep('3. Ambulance En Route', 'Driver is 1.2 km away (ETA 4 mins)', true, isDark),
-                  _buildTimelineStep('4. Patient Handover', 'PSG Hospitals Trauma Bay 2 transfer', false, isDark),
-
-                  const SizedBox(height: 16),
                 ],
               ),
             ),
@@ -599,7 +468,155 @@ class _EmergencyDispatchTrackingScreenState extends State<EmergencyDispatchTrack
     );
   }
 
-  // Timeline Stepper Item Widget
+  Widget _buildTrackingDetailsSheet(bool isDark) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Drag Handle Indicator
+        Center(
+          child: Container(
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: isDark ? AppColors.darkBorder : AppColors.neutral200,
+              borderRadius: BorderRadius.circular(99),
+            ),
+          ),
+        ),
+
+        const SizedBox(height: AppTokens.spaceMd),
+
+        // Assigned Driver & Paramedic Card
+        Container(
+          padding: const EdgeInsets.all(AppTokens.spaceMd),
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.darkSurfaceCard : AppColors.neutral100,
+            borderRadius: AppTokens.borderRadiusLg,
+            border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.neutral200),
+          ),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: 26,
+                    backgroundColor: AppColors.primary500.withValues(alpha: 0.2),
+                    child: const Icon(Icons.person_rounded, color: AppColors.primary500, size: 30),
+                  ),
+                  const SizedBox(width: 14),
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Driver: K. Karthik',
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                        ),
+                        SizedBox(height: 2),
+                        Text(
+                          'Paramedic: S. Ramanan, EMT-P',
+                          style: TextStyle(fontSize: 12, color: AppColors.neutral600),
+                        ),
+                        SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Icon(Icons.star_rounded, color: Colors.amber, size: 16),
+                            SizedBox(width: 4),
+                            Text(
+                              '4.9 (520 Dispatches)',
+                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Quick Action Buttons
+                  IconButton.filledTonal(
+                    icon: const Icon(Icons.phone_rounded, color: AppColors.esi4LessUrgent),
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Calling 108 Paramedic S. Ramanan directly...')),
+                      );
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Divider(height: 1, color: isDark ? AppColors.darkBorder : AppColors.neutral200),
+              const SizedBox(height: 10),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Vehicle: 108 TN ALS Unit',
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                  ),
+                  Text(
+                    'Plate: TN-37-AM-1080',
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.primary500),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: AppTokens.spaceMd),
+
+        // Destination Hospital Summary
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.darkSurfaceCard : AppColors.neutral100,
+            borderRadius: AppTokens.borderRadiusLg,
+            border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.neutral200),
+          ),
+          child: const Row(
+            children: [
+              Icon(Icons.local_hospital_outlined, color: AppColors.esi1Critical, size: 24),
+              SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'PSG Hospitals ER (Trauma Bay 2 Reserved)',
+                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+                    ),
+                    Text(
+                      'Attending: Dr. S. Rajendran • ICU Bed Reserved',
+                      style: TextStyle(fontSize: 11, color: AppColors.neutral600),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: AppTokens.spaceMd),
+
+        // Emergency Status Timeline Progress Stepper
+        Text(
+          'Emergency Status Timeline',
+          style: GoogleFonts.poppins(
+            fontSize: 15,
+            fontWeight: FontWeight.w700,
+            color: isDark ? Colors.white : AppColors.neutral900,
+          ),
+        ),
+        const SizedBox(height: 12),
+        _buildTimelineStep('1. Emergency Requested', 'SOS verified & ESI 1 priority assigned', true, isDark),
+        _buildTimelineStep('2. 108 Ambulance Assigned', 'TN-37-AM-1080 accepted dispatch', true, isDark),
+        _buildTimelineStep('3. Ambulance En Route', 'Driver is 1.2 km away (ETA 4 mins)', true, isDark),
+        _buildTimelineStep('4. Patient Handover', 'PSG Hospitals Trauma Bay 2 transfer', false, isDark),
+
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+
   Widget _buildTimelineStep(String title, String subtitle, bool isCompleted, bool isDark) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
@@ -646,7 +663,6 @@ class _EmergencyDispatchTrackingScreenState extends State<EmergencyDispatchTrack
     );
   }
 
-  // Google Maps Interactive Component
   Widget _buildGoogleMapsPlaceholder({
     required double height,
     required bool isDark,
@@ -708,7 +724,7 @@ class _EmergencyDispatchTrackingScreenState extends State<EmergencyDispatchTrack
       width: double.infinity,
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1E293B) : const Color(0xFFE2E8F0),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: AppTokens.borderRadiusLg,
         border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.neutral200),
       ),
       clipBehavior: Clip.antiAlias,

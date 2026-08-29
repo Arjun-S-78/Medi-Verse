@@ -1,0 +1,4 @@
+case_id,synthetic,severity,chief_complaint,expected_triage_category,expected_escalation_action
+SYN-90048665,True,LOW,"Stubbed my pinky toe on the bed frame, it's bruised.",LOW,Routine Tele-consultation & Home Monitoring Advice
+SYN-13356886,True,CRITICAL,I don't know what's happening but my chest started hurting suddenly while sitting on the couch.,CRITICAL,Dispatch Immediate ALS Emergency Ambulance & Alert Nearest Trauma Center
+SYN-55176955,True,LOW,I cut my arm deep with a power tool and blood is pulsing out everywhere!,LOW,Routine Tele-consultation & Home Monitoring Advice

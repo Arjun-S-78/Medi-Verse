@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// StateNotifier for dynamic ThemeMode management (Light, Dark, System)
 class ThemeModeNotifier extends StateNotifier<ThemeMode> {
-  ThemeModeNotifier() : super(ThemeMode.system);
+  ThemeModeNotifier() : super(ThemeMode.dark);
 
   void setThemeMode(ThemeMode mode) {
     state = mode;

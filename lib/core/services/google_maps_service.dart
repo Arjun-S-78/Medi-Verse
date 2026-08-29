@@ -67,6 +67,25 @@ class GoogleMapsService {
     return markers;
   }
 
+  /// Generates polyline coordinates between a start and end LatLng
+  static List<LatLng> generatePolylineCoordinates({
+    required LatLng start,
+    required LatLng end,
+  }) {
+    return [
+      start,
+      LatLng(
+        start.latitude + (end.latitude - start.latitude) * 0.4 + 0.002,
+        start.longitude + (end.longitude - start.longitude) * 0.3 - 0.003,
+      ),
+      LatLng(
+        start.latitude + (end.latitude - start.latitude) * 0.7 - 0.001,
+        start.longitude + (end.longitude - start.longitude) * 0.8 + 0.002,
+      ),
+      end,
+    ];
+  }
+
   /// Map raw offset points to actual LatLng around city center
   static LatLng _getAmbulanceLatLng(Map<String, dynamic> amb) {
     if (amb['lat'] != null && amb['lng'] != null) {
@@ -108,18 +127,7 @@ class GoogleMapsService {
 
     if (destPos != null) {
       // Create active route polyline
-      final List<LatLng> routePoints = [
-        ambPos,
-        LatLng(
-          ambPos.latitude + (destPos.latitude - ambPos.latitude) * 0.4 + 0.002,
-          ambPos.longitude + (destPos.longitude - ambPos.longitude) * 0.3 - 0.003,
-        ),
-        LatLng(
-          ambPos.latitude + (destPos.latitude - ambPos.latitude) * 0.7 - 0.001,
-          ambPos.longitude + (destPos.longitude - ambPos.longitude) * 0.8 + 0.002,
-        ),
-        destPos,
-      ];
+      final List<LatLng> routePoints = generatePolylineCoordinates(start: ambPos, end: destPos);
 
       polylines.add(
         Polyline(
