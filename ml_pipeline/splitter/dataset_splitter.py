@@ -93,10 +93,14 @@ class DatasetSplitter:
         return splits
 
 if __name__ == "__main__":
-    src_file = "ml_pipeline/data/benchmark_20_cases.json"
+    src_file = "ml_pipeline/data/train/train_dataset.json"
+    if not os.path.exists(src_file):
+        src_file = "ml_pipeline/data/benchmark_20_cases.json"
+        
     if os.path.exists(src_file):
-        with open(src_file, "r") as f:
+        with open(src_file, "r", encoding="utf-8") as f:
             data = json.load(f)
         DatasetSplitter.split_and_export(data)
     else:
         print(f"Source file {src_file} not found. Run generator first.")
+

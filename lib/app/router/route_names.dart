@@ -15,5 +15,6 @@ abstract class RouteNames {
   static const String hospitalSearch = '/hospitals';
   static const String hospitalDetail = '/hospitals/detail';
   static const String healthPassport = '/profile/passport';
+  static const String doctorBooking = '/book-doctors';
   static const String feedback = '/emergency/feedback';
 }

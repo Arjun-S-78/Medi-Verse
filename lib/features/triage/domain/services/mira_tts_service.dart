@@ -69,11 +69,17 @@ class MiraTtsService {
 
   /// Query available TTS voices and discover best female voice with fallback hierarchy.
   Future<void> discoverBestVoice({
-    String preferredLanguage = 'en-IN',
+    String preferredLanguage = 'en-US',
     bool preferFemale = true,
   }) async {
     try {
-      final List<dynamic>? voices = await _flutterTts.getVoices;
+      List<dynamic>? voices = await _flutterTts.getVoices;
+
+      // Web browsers load synthesis voices asynchronously; retry if empty
+      if (voices == null || voices.isEmpty) {
+        await Future.delayed(const Duration(milliseconds: 300));
+        voices = await _flutterTts.getVoices;
+      }
 
       if (voices != null && voices.isNotEmpty) {
         final parsedVoices = voices
@@ -87,28 +93,53 @@ class MiraTtsService {
         Map<String, String>? chosen;
 
         if (preferFemale) {
-          // Priority 1: Female en-IN
-          chosen = _findVoice(parsedVoices, localeContains: 'en-in', nameContains: 'female');
-          chosen ??= _findVoice(parsedVoices, localeContains: 'en-IN', nameContains: 'female');
+          final femaleNames = [
+            'zira',
+            'jenny',
+            'aria',
+            'sonia',
+            'samantha',
+            'victoria',
+            'karen',
+            'moira',
+            'fiona',
+            'female',
+            'woman',
+            'google us english',
+            'google uk english female',
+            'natural female',
+            'wavenet-f',
+            'standard-c',
+            'eva',
+            'hazel',
+            'heera',
+            'kalpana',
+            'veena'
+          ];
 
-          // Priority 2: Female en-US
-          chosen ??= _findVoice(parsedVoices, localeContains: 'en-us', nameContains: 'female');
-          chosen ??= _findVoice(parsedVoices, localeContains: 'en-US', nameContains: 'female');
+          for (final fName in femaleNames) {
+            chosen = _findVoice(parsedVoices, nameContains: fName);
+            if (chosen != null) break;
+          }
 
-          // Priority 3: Any female voice
-          chosen ??= _findVoice(parsedVoices, nameContains: 'female');
-          chosen ??= _findVoice(parsedVoices, nameContains: 'woman');
+          // Fallback: exclude known male voice names
+          if (chosen == null) {
+            final maleKeywords = ['david', 'mark', 'george', 'james', 'richard', 'ravi', 'hemant', 'male', 'man', 'guy', 'stefan', 'adam'];
+            for (final v in parsedVoices) {
+              final nameLower = v['name']!.toLowerCase();
+              final isMale = maleKeywords.any((m) => nameLower.contains(m));
+              if (!isMale) {
+                chosen = v;
+                break;
+              }
+            }
+          }
         }
 
-        // Priority 4: Any en-IN
-        chosen ??= _findVoice(parsedVoices, localeContains: 'en-in');
-        chosen ??= _findVoice(parsedVoices, localeContains: 'en-IN');
+        // Priority: any English voice
+        chosen ??= _findVoice(parsedVoices, localeContains: 'en');
 
-        // Priority 5: Any en-US
-        chosen ??= _findVoice(parsedVoices, localeContains: 'en-us');
-        chosen ??= _findVoice(parsedVoices, localeContains: 'en-US');
-
-        // Priority 6: First available voice
+        // Priority: First available voice
         chosen ??= parsedVoices.isNotEmpty ? parsedVoices.first : null;
 
         if (chosen != null && chosen['name']!.isNotEmpty) {
@@ -116,7 +147,10 @@ class MiraTtsService {
           _selectedLanguage = chosen['locale']!.isNotEmpty ? chosen['locale']! : preferredLanguage;
 
           try {
-            await _flutterTts.setVoice(_selectedVoice!);
+            await _flutterTts.setVoice({
+              'name': _selectedVoice!['name']!,
+              'locale': _selectedVoice!['locale'] ?? _selectedLanguage,
+            });
           } catch (_) {
             // Web / fallback platform override
           }
@@ -179,6 +213,26 @@ class MiraTtsService {
     // 2. Fallback Engine: FlutterTts Female System Voice
     try {
       await stop();
+
+      // Ensure voice discovery is executed (to pick browser voices loaded asynchronously)
+      await discoverBestVoice(
+        preferredLanguage: settings.preferredLanguage,
+        preferFemale: settings.preferFemaleVoice,
+      );
+
+      await setSpeechRate(settings.speechRate);
+      await setPitch(settings.pitch > 1.0 ? settings.pitch : 1.25);
+      await setVolume(settings.volume);
+
+      if (_selectedVoice != null && _selectedVoice!['name'] != null && _selectedVoice!['name']!.isNotEmpty) {
+        try {
+          await _flutterTts.setVoice({
+            'name': _selectedVoice!['name']!,
+            'locale': _selectedVoice!['locale'] ?? 'en-US',
+          });
+        } catch (_) {}
+      }
+
       await _flutterTts.speak(cleanedText);
     } catch (e) {
       if (onError != null) onError!("Speech playback error: $e");

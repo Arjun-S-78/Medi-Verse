@@ -16,13 +16,13 @@ class MiraTtsSettings {
   const MiraTtsSettings({
     this.isEnabled = true,
     this.autoPlay = true,
-    this.speechRate = 0.48, // Calm, moderate healthcare speaking speed
-    this.pitch = 1.0, // Warm, natural tone
+    this.speechRate = 0.45, // Calm, soothing healthcare speaking speed
+    this.pitch = 1.08, // Warm, healing female voice tone
     this.volume = 1.0,
-    this.preferredLanguage = 'en-IN',
+    this.preferredLanguage = 'en-US',
     this.preferFemaleVoice = true,
     this.useKokoroModel = true,
-    this.kokoroVoice = 'af_heart', // Kokoro-82M flagship female voice
+    this.kokoroVoice = 'af_heart', // Kokoro-82M flagship soothing female voice ("Heart")
     this.kokoroEndpoint = 'http://localhost:8880/v1/audio/speech',
   });
 
@@ -71,10 +71,10 @@ class MiraTtsSettings {
     return MiraTtsSettings(
       isEnabled: json['isEnabled'] as bool? ?? true,
       autoPlay: json['autoPlay'] as bool? ?? true,
-      speechRate: (json['speechRate'] as num?)?.toDouble() ?? 0.48,
-      pitch: (json['pitch'] as num?)?.toDouble() ?? 1.0,
+      speechRate: (json['speechRate'] as num?)?.toDouble() ?? 0.45,
+      pitch: (json['pitch'] as num?)?.toDouble() ?? 1.08,
       volume: (json['volume'] as num?)?.toDouble() ?? 1.0,
-      preferredLanguage: json['preferredLanguage'] as String? ?? 'en-IN',
+      preferredLanguage: json['preferredLanguage'] as String? ?? 'en-US',
       preferFemaleVoice: json['preferFemaleVoice'] as bool? ?? true,
       useKokoroModel: json['useKokoroModel'] as bool? ?? true,
       kokoroVoice: json['kokoroVoice'] as String? ?? 'af_heart',
