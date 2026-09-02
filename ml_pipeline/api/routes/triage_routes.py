@@ -1,5 +1,5 @@
 """
-FastAPI Routes for MIRA Live Clinical Triage, Dataset-Trained NLP Engine, & Symptom Extraction.
+FastAPI Routes for MIRA Live Clinical Triage, Generative Gemini AI + Dataset-Trained NLP Engine, & Symptom Extraction.
 """
 
 import uuid
@@ -8,6 +8,7 @@ import re
 import math
 import os
 import sys
+import urllib.request
 from collections import Counter
 from typing import Dict, Any, List, Optional
 from fastapi import APIRouter, Depends, HTTPException
@@ -36,6 +37,63 @@ class TriageResponse(BaseModel):
     emergency_red_flags: List[str]
     recommended_action: str
     mira_reply: str
+
+# -------------------------------------------------------------------
+# Google Gemini Generative AI Integration
+# -------------------------------------------------------------------
+def call_gemini_ai(user_query: str) -> Optional[str]:
+    """Queries Google Gemini Generative AI REST API for dynamic medical answers."""
+    api_key = (
+        os.getenv("GEMINI_API_KEY") or
+        os.getenv("MIRA_AI_API_KEY") or
+        os.getenv("GOOGLE_AI_KEY") or
+        ""
+    ).strip()
+
+    # Skip if key is empty or invalid length
+    if not api_key or len(api_key) < 15:
+        return None
+
+    try:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
+        system_prompt = (
+            "You are MIRA (Medical Intelligent Responsive Assistant), a highly knowledgeable, empathetic, "
+            "and concise AI Clinical Nurse for MediVerse health platform. Answer the patient's query in clean Markdown. "
+            "Include key observations, home care recommendations, when to seek doctor care, and suggest booking a specialist "
+            "or visiting top Coimbatore emergency hospitals if relevant."
+        )
+        payload = {
+            "contents": [
+                {
+                    "role": "user",
+                    "parts": [{"text": f"{system_prompt}\n\nPatient Query: {user_query}"}]
+                }
+            ],
+            "generationConfig": {
+                "temperature": 0.3,
+                "maxOutputTokens": 600
+            }
+        }
+        data = json.dumps(payload).encode("utf-8")
+        req = urllib.request.Request(
+            url,
+            data=data,
+            headers={"Content-Type": "application/json"},
+            method="POST"
+        )
+        with urllib.request.urlopen(req, timeout=5) as response:
+            if response.status == 200:
+                res_body = json.loads(response.read().decode("utf-8"))
+                candidates = res_body.get("candidates", [])
+                if candidates:
+                    parts = candidates[0].get("content", {}).get("parts", [])
+                    if parts:
+                        text = parts[0].get("text", "")
+                        if text and len(text.strip()) > 10:
+                            return text.strip()
+    except Exception as e:
+        print(f"[Gemini AI Engine Info]: {e}")
+    return None
 
 # -------------------------------------------------------------------
 # MIRA Dataset-Trained NLP Semantic Search & Response Engine
@@ -138,7 +196,7 @@ class MiraNLPEngine:
 nlp_engine = MiraNLPEngine()
 
 def generate_interactive_nlp_response(user_query: str, priority: str) -> str:
-    """Generates an interactive, dataset-trained NLP response tailored to user's question."""
+    """Generates an interactive NLP response using Gemini Generative AI or trained TF-IDF Engine."""
     query_clean = user_query.strip()
     lower = query_clean.lower()
 
@@ -162,7 +220,12 @@ def generate_interactive_nlp_response(user_query: str, priority: str) -> str:
             "How can I assist you with your health query today?"
         )
 
-    # Perform dataset query
+    # 1. Try Gemini Generative AI
+    gemini_reply = call_gemini_ai(user_query)
+    if gemini_reply:
+        return gemini_reply
+
+    # 2. Try Dataset TF-IDF Search Engine
     matches = nlp_engine.query(user_query, top_k=3)
     
     if matches and matches[0][1] > 0.05:
@@ -200,7 +263,7 @@ def generate_interactive_nlp_response(user_query: str, priority: str) -> str:
         )
         return "\n".join(response_parts)
 
-    # Interactive dynamic fallback for generic medical questions
+    # 3. Interactive dynamic fallback for generic medical questions
     return (
         f"Thank you for sharing your query regarding **'{query_clean}'**.\n\n"
         "As your MediVerse Neural Clinical Assistant, I analyze your health questions using our trained clinical knowledge base.\n\n"
@@ -234,7 +297,7 @@ def process_triage(request: TriageRequest, db: Session = Depends(get_db)):
     else:
         action = "Routine Consultation & Self-Monitoring"
 
-    # Generate interactive dataset-trained NLP reply
+    # Generate interactive Gemini AI / TF-IDF NLP reply
     reply = generate_interactive_nlp_response(request.chief_complaint, priority)
 
     extracted_symptoms = {

@@ -12,6 +12,10 @@ public interface UserService {
 
     AuthResponse refreshToken(RefreshTokenRequest request);
 
+    OtpResponse sendOtp(OtpRequest request);
+
+    OtpResponse verifyOtp(OtpVerifyRequest request);
+
     UserResponse getUserById(UUID id);
 
     UserResponse getUserByEmail(String email);

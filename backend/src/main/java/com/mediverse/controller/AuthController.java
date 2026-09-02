@@ -1,9 +1,6 @@
 package com.mediverse.controller;
 
-import com.mediverse.dto.user.AuthResponse;
-import com.mediverse.dto.user.RefreshTokenRequest;
-import com.mediverse.dto.user.UserLoginRequest;
-import com.mediverse.dto.user.UserRegisterRequest;
+import com.mediverse.dto.user.*;
 import com.mediverse.exception.ErrorResponse;
 import com.mediverse.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -76,6 +73,47 @@ public class AuthController {
     })
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody UserLoginRequest request) {
         AuthResponse response = userService.login(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/send-otp")
+    @SecurityRequirements // Public Endpoint
+    @Operation(
+            summary = "Dispatch SMS OTP to Mobile Phone",
+            description = "Generates a 6-digit verification pin and sends it via real SMS gateway (Twilio / Fast2SMS) or Dev Logger."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "OTP successfully dispatched to recipient phone number",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = OtpResponse.class))
+            )
+    })
+    public ResponseEntity<OtpResponse> sendOtp(@Valid @RequestBody OtpRequest request) {
+        OtpResponse response = userService.sendOtp(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/verify-otp")
+    @SecurityRequirements // Public Endpoint
+    @Operation(
+            summary = "Verify OTP & Authenticate User Session",
+            description = "Validates active 6-digit OTP pin and returns JWT access tokens for active user authentication."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "OTP verified successfully - JWT tokens issued",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = OtpResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized: Invalid or expired OTP verification code",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
+    public ResponseEntity<OtpResponse> verifyOtp(@Valid @RequestBody OtpVerifyRequest request) {
+        OtpResponse response = userService.verifyOtp(request);
         return ResponseEntity.ok(response);
     }
 

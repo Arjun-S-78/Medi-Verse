@@ -36,6 +36,8 @@ app.include_router(triage_routes.router)
 app.include_router(evaluation_routes.router)
 
 @app.get("/")
+@app.get("/health")
+@app.get("/api/v1/mira/health")
 def root():
     return {
         "service": "MediVerse MIRA Synthetic Engine & FastAPI Service",

@@ -12,6 +12,7 @@ import com.mediverse.exception.ApiException;
 import com.mediverse.exception.ResourceNotFoundException;
 import com.mediverse.exception.UnauthorizedException;
 import com.mediverse.security.JwtTokenProvider;
+import com.mediverse.service.OtpService;
 import com.mediverse.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -36,6 +38,7 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
     private final JwtProperties jwtProperties;
+    private final OtpService otpService;
 
     @Override
     @Transactional
@@ -50,10 +53,8 @@ public class UserServiceImpl implements UserService {
             throw new ApiException("Phone number is already associated with an account", HttpStatus.CONFLICT);
         }
 
-        // Determine user role (Defaults to PATIENT if unspecified)
         Role role = (request.getRole() != null) ? request.getRole() : Role.PATIENT;
 
-        // Build User Entity with BCrypt Password Encryption
         User user = User.builder()
                 .fullName(request.getFullName())
                 .email(request.getEmail().toLowerCase().trim())
@@ -63,7 +64,6 @@ public class UserServiceImpl implements UserService {
                 .enabled(true)
                 .build();
 
-        // If registering as PATIENT, attach Patient Emergency Profile
         if (role == Role.PATIENT && request.getAge() != null) {
             Patient patientProfile = Patient.builder()
                     .user(user)
@@ -122,6 +122,60 @@ public class UserServiceImpl implements UserService {
         log.info("Issued refreshed JWT tokens for user: {}", user.getEmail());
 
         return buildAuthResponse(user);
+    }
+
+    @Override
+    public OtpResponse sendOtp(OtpRequest request) {
+        return otpService.sendOtp(request);
+    }
+
+    @Override
+    @Transactional
+    public OtpResponse verifyOtp(OtpVerifyRequest request) {
+        boolean isValid = otpService.verifyOtp(request);
+        if (!isValid) {
+            throw new ApiException("Invalid or expired 6-digit OTP verification code", HttpStatus.UNAUTHORIZED);
+        }
+
+        String phone = request.getPhoneNumber().trim();
+        Optional<User> userOpt = userRepository.findByPhoneNumber(phone);
+
+        User user;
+        if (userOpt.isPresent()) {
+            user = userOpt.get();
+        } else {
+            // Auto-provision user on first OTP phone login
+            String generatedEmail = "user_" + phone.replaceAll("[^0-9]", "") + "@mediverse.health";
+            user = User.builder()
+                    .fullName("MediVerse Patient (" + phone + ")")
+                    .email(generatedEmail)
+                    .password(passwordEncoder.encode(UUID.randomUUID().toString()))
+                    .phoneNumber(phone)
+                    .role(Role.PATIENT)
+                    .enabled(true)
+                    .build();
+
+            Patient patientProfile = Patient.builder()
+                    .user(user)
+                    .age(28)
+                    .gender(Gender.OTHER)
+                    .bloodGroup(BloodGroup.O_POSITIVE)
+                    .iceContactName("Emergency Contact")
+                    .iceContactPhone(phone)
+                    .currentVitals("Normal")
+                    .build();
+            user.setPatientProfile(patientProfile);
+            user = userRepository.save(user);
+            log.info("[UserService] Created new OTP patient user profile for phone: {}", phone);
+        }
+
+        AuthResponse authResponse = buildAuthResponse(user);
+        return OtpResponse.builder()
+                .success(true)
+                .message("Phone number successfully verified. Authenticated into MediVerse!")
+                .phoneNumber(phone)
+                .authResponse(authResponse)
+                .build();
     }
 
     @Override

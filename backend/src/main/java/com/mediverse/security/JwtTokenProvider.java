@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +25,18 @@ public class JwtTokenProvider {
     private final JwtProperties jwtProperties;
 
     private SecretKey getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(jwtProperties.getSecret());
+        byte[] keyBytes;
+        try {
+            keyBytes = Decoders.BASE64.decode(jwtProperties.getSecret());
+        } catch (Exception e) {
+            keyBytes = jwtProperties.getSecret().getBytes(StandardCharsets.UTF_8);
+        }
+        if (keyBytes.length < 32) {
+            // Pad key bytes to ensure 256-bit security threshold for HMAC-SHA256
+            byte[] padded = new byte[32];
+            System.arraycopy(keyBytes, 0, padded, 0, Math.min(keyBytes.length, 32));
+            keyBytes = padded;
+        }
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
