@@ -8,7 +8,10 @@ import '../../features/auth/presentation/views/register_screen.dart';
 import '../../features/auth/presentation/views/splash_screen.dart';
 import '../../features/dashboard/presentation/views/patient_dashboard_screen.dart';
 import '../../features/hospital/presentation/views/doctor_booking_screen.dart';
+import '../../features/hospital/presentation/views/doctor_dashboard_screen.dart';
+import '../../features/hospital/presentation/views/admin_dashboard_screen.dart';
 import '../../features/hospital/presentation/views/live_emergency_map_screen.dart';
+import '../../features/profile/presentation/views/health_passport_screen.dart';
 import '../../features/triage/presentation/views/ai_nurse_triage_screen.dart';
 import 'route_names.dart';
 
@@ -46,6 +49,14 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const DoctorBookingScreen(),
     ),
     GoRoute(
+      path: RouteNames.doctorDashboard,
+      builder: (context, state) => const DoctorDashboardScreen(),
+    ),
+    GoRoute(
+      path: RouteNames.adminDashboard,
+      builder: (context, state) => const AdminDashboardScreen(),
+    ),
+    GoRoute(
       path: RouteNames.sosModal,
       builder: (context, state) => const EmergencyDispatchTrackingScreen(initialStep: 0),
     ),
@@ -60,6 +71,14 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: RouteNames.ambulanceDashboard,
       builder: (context, state) => const AmbulanceTrackingDashboardScreen(),
+    ),
+    GoRoute(
+      path: RouteNames.healthPassport,
+      builder: (context, state) {
+        final tabParam = state.uri.queryParameters['tab'];
+        final tabIndex = tabParam != null ? int.tryParse(tabParam) ?? 0 : 0;
+        return HealthPassportScreen(initialTabIndex: tabIndex);
+      },
     ),
   ],
   errorBuilder: (context, state) => Scaffold(

@@ -624,6 +624,16 @@ class _AppointmentBookingModalState extends State<_AppointmentBookingModal> {
   final List<String> _afternoonSlots = ['02:00 PM', '02:45 PM', '03:30 PM', '04:15 PM'];
   final List<String> _eveningSlots = ['05:30 PM', '06:15 PM', '07:00 PM', '07:45 PM'];
 
+  String _monthName(int month) {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return months[(month - 1).clamp(0, 11)];
+  }
+
+  String _dayName(int weekday) {
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    return days[(weekday - 1).clamp(0, 6)];
+  }
+
   @override
   void initState() {
     super.initState();
@@ -894,10 +904,64 @@ class _AppointmentBookingModalState extends State<_AppointmentBookingModal> {
 
             const SizedBox(height: 20),
 
-            // Date Picker Section
-            Text(
-              'Select Date',
-              style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+            // Date Picker Section with Interactive Calendar
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Select Date',
+                  style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+                InkWell(
+                  onTap: () async {
+                    final picked = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime.now().add(const Duration(days: 90)),
+                      builder: (context, child) {
+                        return Theme(
+                          data: Theme.of(context).copyWith(
+                            colorScheme: const ColorScheme.dark(
+                              primary: Color(0xFF7C3AED),
+                              onPrimary: Colors.white,
+                              surface: Color(0xFF0F172A),
+                              onSurface: Colors.white,
+                            ),
+                          ),
+                          child: child!,
+                        );
+                      },
+                    );
+                    if (picked != null) {
+                      final formattedDate = "${picked.day} ${_monthName(picked.month)}";
+                      final dayName = _dayName(picked.weekday);
+                      setState(() {
+                        _dates.insert(0, {'day': dayName, 'date': formattedDate});
+                        _selectedDateIndex = 0;
+                      });
+                    }
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF7C3AED).withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFA78BFA).withValues(alpha: 0.5)),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.calendar_month_rounded, color: Color(0xFFC084FC), size: 16),
+                        const SizedBox(width: 6),
+                        Text(
+                          'Open Calendar',
+                          style: GoogleFonts.poppins(fontSize: 11.5, fontWeight: FontWeight.w600, color: const Color(0xFFC084FC)),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 10),
             SizedBox(

@@ -16,8 +16,8 @@ class MiraTtsSettings {
   const MiraTtsSettings({
     this.isEnabled = true,
     this.autoPlay = true,
-    this.speechRate = 0.45, // Calm, soothing healthcare speaking speed
-    this.pitch = 1.08, // Warm, healing female voice tone
+    this.speechRate = 0.50, // Standard normal speaking speed (1.0x)
+    this.pitch = 1.0, // Natural female voice tone
     this.volume = 1.0,
     this.preferredLanguage = 'en-US',
     this.preferFemaleVoice = true,

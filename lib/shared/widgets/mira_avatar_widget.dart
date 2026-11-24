@@ -106,29 +106,13 @@ class MiraAvatarWidget extends StatelessWidget {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    // MIRA Image Face Asset
-                    Image.asset(
-                      'assets/images/MIRA.png',
-                      width: size,
-                      height: size,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Image.asset(
-                          'assets/images/mira.png',
-                          width: size,
-                          height: size,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error2, stackTrace2) {
-                            return Icon(
-                              mode == MiraMode.emergency
-                                  ? Icons.medical_services_rounded
-                                  : (isListening ? Icons.mic_rounded : Icons.support_agent_rounded),
-                              color: Colors.white,
-                              size: size * 0.52,
-                            );
-                          },
-                        );
-                      },
+                    // Clinical Medical Icon
+                    Icon(
+                      mode == MiraMode.emergency
+                          ? Icons.emergency_rounded
+                          : (isListening ? Icons.mic_rounded : Icons.health_and_safety_rounded),
+                      color: Colors.white,
+                      size: size * 0.52,
                     ),
 
                     // Waveform pulse line when speaking

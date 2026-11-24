@@ -14,6 +14,10 @@ class MiraMessage {
   final String? fieldPrompt;
   final bool requiresEmergencyAction;
 
+  /// When true, the UI renders this message with a typewriter/streaming animation
+  /// (like ChatGPT). Set to true on creation, false once animation completes.
+  final bool isStreaming;
+
   const MiraMessage({
     required this.id,
     required this.sender,
@@ -22,6 +26,7 @@ class MiraMessage {
     this.quickReplies,
     this.fieldPrompt,
     this.requiresEmergencyAction = false,
+    this.isStreaming = false,
   });
 
   factory MiraMessage.mira({
@@ -30,6 +35,7 @@ class MiraMessage {
     List<String>? quickReplies,
     String? fieldPrompt,
     bool requiresEmergencyAction = false,
+    bool isStreaming = true,
   }) {
     return MiraMessage(
       id: id,
@@ -39,6 +45,7 @@ class MiraMessage {
       quickReplies: quickReplies,
       fieldPrompt: fieldPrompt,
       requiresEmergencyAction: requiresEmergencyAction,
+      isStreaming: isStreaming,
     );
   }
 
@@ -80,6 +87,7 @@ class MiraMessage {
       quickReplies: (json['quickReplies'] as List<dynamic>?)?.map((e) => e.toString()).toList(),
       fieldPrompt: json['fieldPrompt'] as String?,
       requiresEmergencyAction: json['requiresEmergencyAction'] as bool? ?? false,
+      isStreaming: json['isStreaming'] as bool? ?? false,
     );
   }
 
@@ -92,6 +100,21 @@ class MiraMessage {
       'quickReplies': quickReplies,
       'fieldPrompt': fieldPrompt,
       'requiresEmergencyAction': requiresEmergencyAction,
+      'isStreaming': isStreaming,
     };
+  }
+
+  /// Create a copy of this message with isStreaming set to false
+  MiraMessage withStreamingComplete() {
+    return MiraMessage(
+      id: id,
+      sender: sender,
+      text: text,
+      timestamp: timestamp,
+      quickReplies: quickReplies,
+      fieldPrompt: fieldPrompt,
+      requiresEmergencyAction: requiresEmergencyAction,
+      isStreaming: false,
+    );
   }
 }

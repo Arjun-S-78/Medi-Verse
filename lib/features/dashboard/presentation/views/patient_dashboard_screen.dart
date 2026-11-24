@@ -34,6 +34,79 @@ class _PatientDashboardScreenState extends ConsumerState<PatientDashboardScreen>
   final String _patientName = 'John Doe';
   final String _patientRole = 'Patient';
 
+  Future<void> _showSignOutDialog() async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF0F172A),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.red.withValues(alpha: 0.15),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.logout_rounded, color: Colors.red, size: 22),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              'Sign Out',
+              style: GoogleFonts.poppins(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          'Are you sure you want to sign out of MediVerse?',
+          style: GoogleFonts.poppins(
+            fontSize: 13,
+            color: Colors.white70,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.poppins(
+                fontWeight: FontWeight.w600,
+                color: Colors.white54,
+              ),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
+            child: Text(
+              'Sign Out',
+              style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('🔒 Signed out successfully', style: GoogleFonts.poppins(fontSize: 13)),
+          backgroundColor: Colors.redAccent,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      context.go(RouteNames.login);
+    }
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -265,10 +338,11 @@ class _PatientDashboardScreenState extends ConsumerState<PatientDashboardScreen>
                 _buildNavItem(3, Icons.person_search_outlined, 'Find Doctors', isDark, onTap: () => context.push(RouteNames.doctorBooking)),
                 _buildNavItem(4, Icons.domain_outlined, 'Hospitals', isDark, onTap: () => context.push(RouteNames.hospitalSearch)),
                 _buildNavItem(5, Icons.calendar_month_outlined, 'Appointments', isDark, onTap: () => context.push(RouteNames.doctorBooking)),
-                _buildNavItem(6, Icons.assignment_outlined, 'Health Records', isDark, onTap: () => context.go(RouteNames.healthPassport)),
-                _buildNavItem(7, Icons.receipt_long_outlined, 'Prescriptions', isDark, onTap: () => context.go(RouteNames.healthPassport)),
-                _buildNavItem(8, Icons.tune_rounded, 'Health Insights', isDark, onTap: () => context.go(RouteNames.healthPassport)),
+                _buildNavItem(6, Icons.assignment_outlined, 'Health Records', isDark, onTap: () => context.push('${RouteNames.healthPassport}?tab=0')),
+                _buildNavItem(7, Icons.receipt_long_outlined, 'Prescriptions', isDark, onTap: () => context.push('${RouteNames.healthPassport}?tab=1')),
+                _buildNavItem(8, Icons.tune_rounded, 'Health Insights', isDark, onTap: () => context.push('${RouteNames.healthPassport}?tab=2')),
                 _buildNavItem(9, Icons.shield_outlined, 'Emergency', isDark, isEmergency: true, onTap: () => context.go(RouteNames.sosModal)),
+                _buildNavItem(10, Icons.logout_rounded, 'Sign Out', isDark, isEmergency: true, onTap: _showSignOutDialog),
               ],
             ),
           ),
@@ -529,6 +603,12 @@ class _PatientDashboardScreenState extends ConsumerState<PatientDashboardScreen>
                 ],
               ),
             ),
+          ),
+          const SizedBox(width: 8),
+          IconButton(
+            icon: const Icon(Icons.logout_rounded, color: Color(0xFFF43F5E), size: 22),
+            tooltip: 'Sign Out of MediVerse',
+            onPressed: _showSignOutDialog,
           ),
         ],
       ),

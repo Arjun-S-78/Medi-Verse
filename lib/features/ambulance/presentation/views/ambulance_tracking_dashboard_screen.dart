@@ -250,6 +250,80 @@ class _AmbulanceTrackingDashboardScreenState extends State<AmbulanceTrackingDash
     }
   }
 
+  Future<void> _showSignOutDialog() async {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: isDark ? const Color(0xFF0F172A) : Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.red.withValues(alpha: 0.15),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.logout_rounded, color: Colors.red, size: 22),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              'Sign Out',
+              style: GoogleFonts.poppins(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                color: isDark ? Colors.white : Colors.black87,
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          'Are you sure you want to sign out of the Ambulance Dispatch Portal?',
+          style: GoogleFonts.poppins(
+            fontSize: 13,
+            color: isDark ? Colors.white70 : Colors.black54,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.poppins(
+                fontWeight: FontWeight.w600,
+                color: isDark ? Colors.white54 : Colors.grey[700],
+              ),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
+            child: Text(
+              'Sign Out',
+              style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('🔒 Ambulance unit session signed out.', style: GoogleFonts.poppins(fontSize: 13)),
+          backgroundColor: Colors.redAccent,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      context.go(RouteNames.login);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -294,6 +368,11 @@ class _AmbulanceTrackingDashboardScreenState extends State<AmbulanceTrackingDash
                 const SnackBar(content: Text('Refreshing 108 Fleet Radar...')),
               );
             },
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout_rounded, color: Colors.redAccent),
+            tooltip: 'Sign Out Ambulance Crew',
+            onPressed: _showSignOutDialog,
           ),
           const SizedBox(width: 8),
         ],

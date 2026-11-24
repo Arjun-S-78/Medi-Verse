@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -66,7 +67,7 @@ class _AiNurseTriageScreenState extends ConsumerState<AiNurseTriageScreen> {
     if (_isListeningVoice) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('MIRA Voice Speech Recognition active... Speak your symptoms clearly.'),
+          content: Text('Speech Recognition active... Speak your symptoms clearly.'),
           duration: Duration(seconds: 2),
           backgroundColor: AppColors.primary500,
           behavior: SnackBarBehavior.floating,
@@ -100,7 +101,7 @@ class _AiNurseTriageScreenState extends ConsumerState<AiNurseTriageScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'MIRA Voice Settings',
+                        'Voice Assistant Settings',
                         style: GoogleFonts.poppins(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -115,14 +116,14 @@ class _AiNurseTriageScreenState extends ConsumerState<AiNurseTriageScreen> {
                   ),
                   const SizedBox(height: AppTokens.spaceSm),
                   SwitchListTile(
-                    title: const Text('Enable MIRA Voice (Text-to-Speech)'),
-                    subtitle: const Text('Female nurse voice assistance'),
+                    title: const Text('Enable Voice Assistant (Text-to-Speech)'),
+                    subtitle: const Text('Clinical voice assistance'),
                     value: ttsState.settings.isEnabled,
                     onChanged: (_) => ttsNotifier.toggleMute(),
                   ),
                   SwitchListTile(
                     title: const Text('Auto-play Voice Responses'),
-                    subtitle: const Text('Automatically speak new MIRA questions'),
+                    subtitle: const Text('Automatically speak new triage questions'),
                     value: ttsState.settings.autoPlay,
                     onChanged: ttsState.settings.isEnabled ? (_) => ttsNotifier.toggleAutoPlay() : null,
                   ),
@@ -258,7 +259,7 @@ class _AiNurseTriageScreenState extends ConsumerState<AiNurseTriageScreen> {
                 Row(
                   children: [
                     Text(
-                      'MIRA Triage',
+                      'Clinical Triage',
                       style: GoogleFonts.poppins(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -324,7 +325,7 @@ class _AiNurseTriageScreenState extends ConsumerState<AiNurseTriageScreen> {
               padding: const EdgeInsets.symmetric(horizontal: AppTokens.spaceMd, vertical: 8),
               color: AppColors.primary500.withValues(alpha: 0.08),
               child: const Text(
-                'ℹ️ MIRA is an intelligent emergency triage coordinator — NOT a diagnostic tool.',
+                'ℹ️ MediVerse Triage is an automated clinical triage coordinator — NOT a diagnostic tool.',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: AppColors.primary500),
               ),
@@ -372,8 +373,12 @@ class _AiNurseTriageScreenState extends ConsumerState<AiNurseTriageScreen> {
               child: ListView.builder(
                 controller: _scrollController,
                 padding: const EdgeInsets.all(AppTokens.spaceMd),
-                itemCount: state.messages.length,
+                itemCount: state.messages.length + (state.isProcessing ? 1 : 0),
                 itemBuilder: (context, index) {
+                  // Last item when processing = typing indicator bubble
+                  if (state.isProcessing && index == state.messages.length) {
+                    return const _TypingIndicatorBubble();
+                  }
                   final message = state.messages[index];
                   return _buildMessageBubble(message, ttsState, ttsNotifier, isDark);
                 },
@@ -588,19 +593,42 @@ class _AiNurseTriageScreenState extends ConsumerState<AiNurseTriageScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        message.text,
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          height: 1.4,
-                          color: isPatient
-                              ? Colors.white
-                              : (isDark ? Colors.white : AppColors.neutral900),
+                      // Use streaming widget for MIRA messages that are animating,
+                      // or plain text for patient messages and already-streamed messages
+                      if (!isPatient && message.isStreaming)
+                        _StreamingTextWidget(
+                          key: ValueKey('stream_${message.id}'),
+                          fullText: message.text,
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            height: 1.4,
+                            color: isDark ? Colors.white : AppColors.neutral900,
+                          ),
+                          onComplete: () {
+                            ref
+                                .read(miraConversationProvider.notifier)
+                                .markMessageStreamingComplete(message.id);
+                            _scrollToBottom();
+                            // Start TTS only after text fully streams in
+                            if (ttsState.settings.autoPlay && ttsState.settings.isEnabled) {
+                              ttsNotifier.speakMessage(message);
+                            }
+                          },
+                        )
+                      else
+                        Text(
+                          message.text,
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            height: 1.4,
+                            color: isPatient
+                                ? Colors.white
+                                : (isDark ? Colors.white : AppColors.neutral900),
+                          ),
                         ),
-                      ),
 
-                      // Replay / Stop Voice Button
-                      if (!isPatient) ...[
+                      // Replay / Stop Voice Button — only visible after streaming
+                      if (!isPatient && !message.isStreaming) ...[
                         const SizedBox(height: 8),
                         InkWell(
                           onTap: () {
@@ -648,8 +676,8 @@ class _AiNurseTriageScreenState extends ConsumerState<AiNurseTriageScreen> {
             ],
           ),
 
-          // Quick Replies Chips
-          if (!isPatient && message.quickReplies != null && message.quickReplies!.isNotEmpty) ...[
+          // Quick Replies Chips — only visible after streaming finishes
+          if (!isPatient && !message.isStreaming && message.quickReplies != null && message.quickReplies!.isNotEmpty) ...[
             const SizedBox(height: 10),
             Wrap(
               spacing: 8,
@@ -755,7 +783,7 @@ class _AiNurseTriageScreenState extends ConsumerState<AiNurseTriageScreen> {
             child: TextField(
               controller: _textController,
               decoration: InputDecoration(
-                hintText: _isListeningVoice ? 'MIRA Listening...' : 'Describe symptoms or answer MIRA...',
+                hintText: _isListeningVoice ? 'Listening...' : 'Describe symptoms or answer triage questions...',
                 hintStyle: TextStyle(fontSize: 13, color: isDark ? AppColors.neutral400 : AppColors.neutral600),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(24),
@@ -775,6 +803,193 @@ class _AiNurseTriageScreenState extends ConsumerState<AiNurseTriageScreen> {
           ),
         ],
       ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Typing Indicator Bubble — 3 bouncing dots (like ChatGPT / WhatsApp)
+// ---------------------------------------------------------------------------
+class _TypingIndicatorBubble extends StatefulWidget {
+  const _TypingIndicatorBubble();
+
+  @override
+  State<_TypingIndicatorBubble> createState() => _TypingIndicatorBubbleState();
+}
+
+class _TypingIndicatorBubbleState extends State<_TypingIndicatorBubble>
+    with TickerProviderStateMixin {
+  late final List<AnimationController> _controllers;
+  late final List<Animation<double>> _animations;
+
+  @override
+  void initState() {
+    super.initState();
+    _controllers = List.generate(
+      3,
+      (i) => AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 500),
+      ),
+    );
+    _animations = _controllers.map((c) {
+      return Tween<double>(begin: 0, end: -8).animate(
+        CurvedAnimation(parent: c, curve: Curves.easeInOut),
+      );
+    }).toList();
+
+    // Stagger each dot 150ms apart, loop forever
+    for (int i = 0; i < 3; i++) {
+      Future.delayed(Duration(milliseconds: i * 150), () {
+        if (mounted) {
+          _controllers[i].repeat(reverse: true);
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    for (final c in _controllers) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              color: AppColors.primary500.withValues(alpha: 0.15),
+              shape: BoxShape.circle,
+              border: Border.all(color: AppColors.primary500.withValues(alpha: 0.4)),
+            ),
+            child: const Icon(LucideIcons.bot, size: 16, color: AppColors.primary500),
+          ),
+          const SizedBox(width: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+            decoration: BoxDecoration(
+              color: isDark ? AppColors.darkSurfaceCard : Colors.white,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(18),
+                topRight: Radius.circular(18),
+                bottomRight: Radius.circular(18),
+                bottomLeft: Radius.circular(2),
+              ),
+              border: Border.all(
+                color: isDark ? AppColors.darkBorder : AppColors.neutral200,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.06),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: List.generate(3, (i) {
+                return AnimatedBuilder(
+                  animation: _animations[i],
+                  builder: (context, _) {
+                    return Transform.translate(
+                      offset: Offset(0, _animations[i].value),
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 3),
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary500.withValues(alpha: 0.7),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    );
+                  },
+                );
+              }),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Streaming Text Widget — reveals text character by character (ChatGPT style)
+// ---------------------------------------------------------------------------
+class _StreamingTextWidget extends StatefulWidget {
+  final String fullText;
+  final TextStyle style;
+  final VoidCallback onComplete;
+
+  const _StreamingTextWidget({
+    super.key,
+    required this.fullText,
+    required this.style,
+    required this.onComplete,
+  });
+
+  @override
+  State<_StreamingTextWidget> createState() => _StreamingTextWidgetState();
+}
+
+class _StreamingTextWidgetState extends State<_StreamingTextWidget> {
+  String _displayedText = '';
+  Timer? _timer;
+  int _charIndex = 0;
+
+  // Characters revealed per tick — higher = faster streaming
+  static const int _charsPerTick = 2;
+  // Delay between ticks in milliseconds — lower = faster
+  static const int _tickMs = 18;
+
+  @override
+  void initState() {
+    super.initState();
+    _startStreaming();
+  }
+
+  void _startStreaming() {
+    _timer = Timer.periodic(const Duration(milliseconds: _tickMs), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      final end = (_charIndex + _charsPerTick).clamp(0, widget.fullText.length);
+      setState(() {
+        _displayedText = widget.fullText.substring(0, end);
+        _charIndex = end;
+      });
+      if (_charIndex >= widget.fullText.length) {
+        timer.cancel();
+        // Notify provider that streaming is complete
+        widget.onComplete();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      _displayedText,
+      style: widget.style,
     );
   }
 }

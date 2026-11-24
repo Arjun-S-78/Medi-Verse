@@ -1,3 +1,4 @@
+import 'mira_action_type.dart';
 import 'mira_message.dart';
 import 'structured_triage_data.dart';
 import 'triage_result.dart';
@@ -24,6 +25,15 @@ class MiraConversationState {
   final TriageResult? triageResult;
   final DateTime startedAt;
 
+  // Enhanced Context Memory attributes
+  final String? currentIntent;
+  final String? previousIntent;
+  final Map<String, dynamic> collectedEntities;
+  final String? severity;
+  final bool requiresEscalation;
+  final MiraActionType? pendingAction;
+  final String? pendingQuestion;
+
   const MiraConversationState({
     required this.sessionId,
     required this.phase,
@@ -34,6 +44,13 @@ class MiraConversationState {
     this.errorMessage,
     this.triageResult,
     required this.startedAt,
+    this.currentIntent,
+    this.previousIntent,
+    this.collectedEntities = const {},
+    this.severity,
+    this.requiresEscalation = false,
+    this.pendingAction,
+    this.pendingQuestion,
   });
 
   /// Factory for initial state when starting a new session.
@@ -45,19 +62,17 @@ class MiraConversationState {
       messages: [
         MiraMessage.mira(
           id: 'welcome_1',
-          text: "Hello, I am MIRA — your AI-Assisted Emergency Triage Nurse.\n\n"
-              "I am here to understand your symptoms and help evaluate your situation. "
-              "I am an emergency support assistant, NOT a doctor, and I do not diagnose medical conditions.\n\n"
-              "If this is a life-threatening medical emergency, call 911 or your local emergency number immediately.\n\n"
-              "What main symptom or chief complaint brings you here today?",
+          text: "Hi! I'm your MediVerse Clinical Health Assistant.\n\n"
+              "How can I help you today?",
           quickReplies: [
-            'Chest pain or pressure',
-            'Shortness of breath',
-            'Severe bleeding / injury',
-            'Sudden numbness / weakness',
-            'Severe abdominal pain',
+            'Find a Hospital',
+            'I have chest pain',
+            'I can\'t breathe',
+            'Book a Doctor',
+            'Call Ambulance',
           ],
           fieldPrompt: 'chiefComplaint',
+          isStreaming: false,
         ),
       ],
       structuredData: StructuredTriageData.empty(),
@@ -66,11 +81,17 @@ class MiraConversationState {
       errorMessage: null,
       triageResult: null,
       startedAt: now,
+      currentIntent: 'greeting',
+      previousIntent: null,
+      collectedEntities: const {},
+      requiresEscalation: false,
+      pendingAction: null,
+      pendingQuestion: null,
     );
   }
 
   bool get isCompleted => phase == MiraConversationPhase.completed;
-  bool get isEmergencyEscalation => phase == MiraConversationPhase.emergencyEscalation;
+  bool get isEmergencyEscalation => phase == MiraConversationPhase.emergencyEscalation || requiresEscalation;
   MiraMessage? get lastMessage => messages.isNotEmpty ? messages.last : null;
 
   MiraConversationState copyWith({
@@ -83,6 +104,13 @@ class MiraConversationState {
     String? errorMessage,
     TriageResult? triageResult,
     DateTime? startedAt,
+    String? currentIntent,
+    String? previousIntent,
+    Map<String, dynamic>? collectedEntities,
+    String? severity,
+    bool? requiresEscalation,
+    MiraActionType? pendingAction,
+    String? pendingQuestion,
   }) {
     return MiraConversationState(
       sessionId: sessionId ?? this.sessionId,
@@ -94,6 +122,13 @@ class MiraConversationState {
       errorMessage: errorMessage ?? this.errorMessage,
       triageResult: triageResult ?? this.triageResult,
       startedAt: startedAt ?? this.startedAt,
+      currentIntent: currentIntent ?? this.currentIntent,
+      previousIntent: previousIntent ?? this.previousIntent,
+      collectedEntities: collectedEntities ?? this.collectedEntities,
+      severity: severity ?? this.severity,
+      requiresEscalation: requiresEscalation ?? this.requiresEscalation,
+      pendingAction: pendingAction ?? this.pendingAction,
+      pendingQuestion: pendingQuestion ?? this.pendingQuestion,
     );
   }
 }

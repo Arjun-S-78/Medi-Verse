@@ -17,6 +17,15 @@ from sqlalchemy.orm import Session
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..")))
 
+# Load .env file so os.getenv() picks up GEMINI_API_KEY and other keys
+try:
+    from dotenv import load_dotenv
+    _env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".env"))
+    load_dotenv(dotenv_path=_env_path, override=True)
+    print(f"[MediVerse] Loaded environment from: {_env_path}")
+except ImportError:
+    print("[MediVerse] python-dotenv not installed. Run: pip install python-dotenv")
+
 from ml_pipeline.database.db_config import get_db
 from ml_pipeline.database.models import MiraTriageLog
 from ml_pipeline.evaluator.mira_evaluator import MiraEvaluator
@@ -55,7 +64,7 @@ def call_gemini_ai(user_query: str) -> Optional[str]:
         return None
 
     try:
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key={api_key}"
         system_prompt = (
             "You are MIRA (Medical Intelligent Responsive Assistant), a highly knowledgeable, empathetic, "
             "and concise AI Clinical Nurse for MediVerse health platform. Answer the patient's query in clean Markdown. "
@@ -71,7 +80,7 @@ def call_gemini_ai(user_query: str) -> Optional[str]:
             ],
             "generationConfig": {
                 "temperature": 0.3,
-                "maxOutputTokens": 600
+                "maxOutputTokens": 800
             }
         }
         data = json.dumps(payload).encode("utf-8")
@@ -81,7 +90,7 @@ def call_gemini_ai(user_query: str) -> Optional[str]:
             headers={"Content-Type": "application/json"},
             method="POST"
         )
-        with urllib.request.urlopen(req, timeout=5) as response:
+        with urllib.request.urlopen(req, timeout=20) as response:
             if response.status == 200:
                 res_body = json.loads(response.read().decode("utf-8"))
                 candidates = res_body.get("candidates", [])
